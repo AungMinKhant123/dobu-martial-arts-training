@@ -1,13 +1,294 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
+}
+
+// ENUMS
+enum Role {
+  ADMIN
+}
+
+enum DayOfWeek {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
+}
+
+enum EnquiryStatus {
+  PENDING
+  READ
+  REPLIED
+}
+
+enum EnrollmentStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum MemberStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum NotificationType {
+  ENQUIRY
+  ENROLLMENT
+  FEEDBACK
+  REVIEW
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+// ADMIN
+model Admin {
+  id       String @id @default(cuid())
+  name     String
+  email    String @unique
+  password String
+  role     Role   @default(ADMIN)
+
+  blogs                  Blog[]
+  notificationRecipients NotificationRecipient[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// NOTIFICATIONS
+model Notification {
+  id String @id @default(cuid())
+
+  title   String
+  message String
+  type    NotificationType
+
+  recipients NotificationRecipient[]
+
+  createdAt DateTime @default(now())
+}
+
+// NOTIFICATION RECIPIENTS
+model NotificationRecipient {
+  id String @id @default(cuid())
+
+  notificationId String
+  notification   Notification @relation(fields: [notificationId], references: [id], onDelete: Cascade)
+
+  adminId String
+  admin   Admin  @relation(fields: [adminId], references: [id], onDelete: Cascade)
+
+  isRead Boolean   @default(false)
+  readAt DateTime?
+
+  createdAt DateTime @default(now())
+
+  @@unique([notificationId, adminId])
+}
+
+// ENQUIRIES
+model Enquiry {
+  id String @id @default(cuid())
+
+  name    String
+  email   String
+  phone   String?
+  subject String
+  message String
+
+  status EnquiryStatus @default(PENDING)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// MEMBERSHIP
+model Membership {
+  id String @id @default(cuid())
+
+  name        String
+  description String
+  duration    Int // months
+  price       Float
+
+  members     Member[]
+  enrollments Enrollment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ENROLLMENT REQUEST
+model Enrollment {
+  id String @id @default(cuid())
+
+  firstName String
+  lastName  String
+
+  email String
+  phone String
+
+  dob    DateTime
+  gender Gender
+
+  address String
+
+  emergencyContactName  String?
+  emergencyContactPhone String?
+
+  medicalConditions String?
+
+  status EnrollmentStatus @default(PENDING)
+
+  membershipId String
+  membership   Membership @relation(fields: [membershipId], references: [id])
+
+  // Member created after approval (optional)
+  member Member?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// MEMBERS
+model Member {
+  id String @id @default(cuid())
+
+  firstName String
+  lastName  String
+
+  email String @unique
+  phone String
+
+  dob    DateTime
+  gender Gender
+
+  address String
+
+  emergencyContactName  String?
+  emergencyContactPhone String?
+
+  medicalConditions String?
+
+  status MemberStatus @default(ACTIVE)
+
+  joinedAt DateTime @default(now())
+
+  membershipId String
+  membership   Membership @relation(fields: [membershipId], references: [id])
+
+  // If this member came from an online enrollment
+  enrollmentId String?     @unique
+  enrollment   Enrollment? @relation(fields: [enrollmentId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// INSTRUCTORS
+model Instructor {
+  id String @id @default(cuid())
+
+  firstName String
+  lastName  String
+
+  email String @unique
+  phone String
+
+  specialty String
+  biography String
+
+  imageUrl String?
+
+  classes Class[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// CLASSES
+model Class {
+  id String @id @default(cuid())
+
+  title       String
+  description String
+
+  level String
+
+  capacity Int
+
+  instructorId String
+  instructor   Instructor @relation(fields: [instructorId], references: [id])
+
+  timetables Timetable[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// TIMETABLE
+model Timetable {
+  id String @id @default(cuid())
+
+  classId String
+  class   Class  @relation(fields: [classId], references: [id])
+
+  dayOfWeek DayOfWeek
+
+  startTime DateTime
+  endTime   DateTime
+
+  room String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// BLOG
+model Blog {
+  id String @id @default(cuid())
+
+  title String
+
+  slug String @unique
+
+  summary String?
+
+  content String @db.LongText
+
+  imageUrl String?
+
+  published Boolean @default(false)
+
+  authorId String
+  author   Admin  @relation(fields: [authorId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// FEEDBACK
+model Feedback {
+  id String @id @default(cuid())
+
+  name String
+
+  email String?
+
+  rating Int
+
+  message String
+
+  createdAt DateTime @default(now())
 }
