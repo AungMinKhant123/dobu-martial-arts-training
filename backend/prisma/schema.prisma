@@ -282,13 +282,13 @@ model Blog {
 model Feedback {
   id String @id @default(cuid())
 
-  name String
+  name String?
 
   email String?
 
   rating Int
 
-  message String
+  message String?
 
   createdAt DateTime @default(now())
 }
