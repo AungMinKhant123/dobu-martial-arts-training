@@ -9,6 +9,7 @@ datasource db {
 // ENUMS
 enum Role {
   ADMIN
+  USER
 }
 
 enum DayOfWeek {
@@ -51,15 +52,27 @@ enum Gender {
   OTHER
 }
 
-// ADMIN
-model Admin {
+enum ClassLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+//User
+model User {
   id       String @id @default(cuid())
   name     String
   email    String @unique
   password String
-  role     Role   @default(ADMIN)
 
-  blogs                  Blog[]
+  role Role @default(USER)
+
+  isActive Boolean @default(true)
+
+  refreshTokens RefreshToken[]
+
+  blogs Blog[]
+
   notificationRecipients NotificationRecipient[]
 
   createdAt DateTime @default(now())
@@ -84,17 +97,17 @@ model NotificationRecipient {
   id String @id @default(cuid())
 
   notificationId String
-  notification   Notification @relation(fields: [notificationId], references: [id], onDelete: Cascade)
+  notification Notification @relation(fields: [notificationId], references: [id], onDelete: Cascade)
 
-  adminId String
-  admin   Admin  @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  isRead Boolean   @default(false)
+  isRead Boolean @default(false)
   readAt DateTime?
 
   createdAt DateTime @default(now())
 
-  @@unique([notificationId, adminId])
+  @@unique([notificationId, userId])
 }
 
 // ENQUIRIES
@@ -224,7 +237,7 @@ model Class {
   title       String
   description String
 
-  level String
+  level ClassLevel
 
   capacity Int
 
@@ -271,8 +284,10 @@ model Blog {
 
   published Boolean @default(false)
 
+  publishedAt DateTime?
+
   authorId String
-  author   Admin  @relation(fields: [authorId], references: [id])
+  author User @relation(fields: [authorId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -291,4 +306,18 @@ model Feedback {
   message String?
 
   createdAt DateTime @default(now())
+}
+
+// RefreshToken
+model RefreshToken {
+  id String @id @default(cuid())
+
+  token String @unique
+
+  expiresAt DateTime
+
+  createdAt DateTime @default(now())
+
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

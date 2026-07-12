@@ -1,4 +1,4 @@
-import { createFeedback } from "../services/feedback.service.js";
+import { createFeedback } from "./feedback.service.js";
 
 export const submitFeedback = async (req, res, next) => {
   try {

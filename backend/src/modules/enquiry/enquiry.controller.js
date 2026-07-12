@@ -1,4 +1,4 @@
-import { createEnquiry } from "../services/enquiry.service.js";
+import { createEnquiry } from "./enquiry.service.js";
 
 export const submitEnquiry = async (req, res, next) => {
   try {
