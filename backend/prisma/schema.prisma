@@ -43,7 +43,6 @@ enum NotificationType {
   ENQUIRY
   ENROLLMENT
   FEEDBACK
-  REVIEW
 }
 
 enum Gender {
@@ -56,6 +55,16 @@ enum ClassLevel {
   BEGINNER
   INTERMEDIATE
   ADVANCED
+}
+
+enum MartialArt {
+  KARATE
+  JUDO
+  TAEKWONDO
+  AIKIDO
+  JIU_JITSU
+  MUAY_THAI
+  KUNG_FU
 }
 
 //User
@@ -106,6 +115,7 @@ model NotificationRecipient {
   readAt DateTime?
 
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([notificationId, userId])
 }
@@ -124,6 +134,8 @@ model Enquiry {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([status])
 }
 
 // MEMBERSHIP
@@ -132,11 +144,12 @@ model Membership {
 
   name        String
   description String
-  duration    Int // months
+  duration    Int
   price       Float
 
   members     Member[]
   enrollments Enrollment[]
+  allowsAllClasses Boolean @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -157,21 +170,20 @@ model Enrollment {
 
   address String
 
-  emergencyContactName  String?
-  emergencyContactPhone String?
-
-  medicalConditions String?
-
   status EnrollmentStatus @default(PENDING)
 
   membershipId String
   membership   Membership @relation(fields: [membershipId], references: [id])
 
-  // Member created after approval (optional)
+  classId String?
+  class   Class? @relation(fields: [classId], references: [id])
+
   member Member?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([status])
 }
 
 // MEMBERS
@@ -189,11 +201,6 @@ model Member {
 
   address String
 
-  emergencyContactName  String?
-  emergencyContactPhone String?
-
-  medicalConditions String?
-
   status MemberStatus @default(ACTIVE)
 
   joinedAt DateTime @default(now())
@@ -201,12 +208,16 @@ model Member {
   membershipId String
   membership   Membership @relation(fields: [membershipId], references: [id])
 
-  // If this member came from an online enrollment
+  classId String?
+  class   Class? @relation(fields: [classId], references: [id])
+
   enrollmentId String?     @unique
   enrollment   Enrollment? @relation(fields: [enrollmentId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([status])
 }
 
 // INSTRUCTORS
@@ -217,17 +228,85 @@ model Instructor {
   lastName  String
 
   email String @unique
-  phone String
+  phone String?
 
-  specialty String
-  biography String
+  biography String @db.Text
 
   imageUrl String?
+
+  beltLevel String?
+
+  experienceYears Int?
+
+  qualifications InstructorQualification[]
+
+  certifications InstructorCertification[]
+
+  achievements InstructorAchievement[]
+
+  specialties InstructorSpecialty[]
 
   classes Class[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model InstructorQualification {
+  id String @id @default(cuid())
+
+  instructorId String
+
+  title String
+
+  instructor Instructor @relation(fields: [instructorId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+}
+
+model InstructorCertification {
+
+  id String @id @default(cuid())
+
+  instructorId String
+
+  name String
+
+  issuedBy String?
+
+  instructor Instructor @relation(fields: [instructorId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+}
+
+model InstructorAchievement {
+
+  id String @id @default(cuid())
+
+  instructorId String
+
+  title String
+
+  year Int?
+
+
+  instructor Instructor @relation(fields: [instructorId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+}
+
+model InstructorSpecialty {
+
+  id String @id @default(cuid())
+
+  instructorId String
+
+  name String
+
+
+  instructor Instructor @relation(fields: [instructorId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
 }
 
 // CLASSES
@@ -236,18 +315,52 @@ model Class {
 
   title       String
   description String
+  martialArt MartialArt
 
   level ClassLevel
+  imageUrl String?
+
+  minAge Int
+  duration Int
+
+  overview    String? @db.Text
 
   capacity Int
+  beltRequirement String?
+
+  isActive Boolean @default(true)
+  isPublished Boolean @default(false)
 
   instructorId String
   instructor   Instructor @relation(fields: [instructorId], references: [id])
 
+  enrollments Enrollment[]
+  members Member[]
+
   timetables Timetable[]
+  learningOutcomes LearningOutcome[]
+  feedbacks Feedback[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([martialArt])
+  @@index([level])
+  @@index([isActive])
+}
+
+// LEARNING OUTCOME
+model LearningOutcome {
+  id String @id @default(cuid())
+
+  content String
+
+  order Int
+
+  classId String
+  class Class @relation(fields: [classId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
 }
 
 // TIMETABLE
@@ -259,8 +372,8 @@ model Timetable {
 
   dayOfWeek DayOfWeek
 
-  startTime DateTime
-  endTime   DateTime
+  startTime DateTime @db.Time(0)
+  endTime   DateTime @db.Time(0)
 
   room String
 
@@ -276,13 +389,13 @@ model Blog {
 
   slug String @unique
 
-  summary String?
+  summary String? @db.Text
 
   content String @db.LongText
 
   imageUrl String?
 
-  published Boolean @default(false)
+  isPublished Boolean @default(false)
 
   publishedAt DateTime?
 
@@ -291,21 +404,6 @@ model Blog {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-}
-
-// FEEDBACK
-model Feedback {
-  id String @id @default(cuid())
-
-  name String?
-
-  email String?
-
-  rating Int
-
-  message String?
-
-  createdAt DateTime @default(now())
 }
 
 // RefreshToken
@@ -320,4 +418,17 @@ model RefreshToken {
 
   userId String
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// FEEDBACK
+model Feedback {
+  id String @id @default(cuid())
+  name String?
+  email String?
+  rating Int
+  message String? @db.Text
+  isApproved Boolean @default(false)
+  classId String?
+  class Class? @relation(fields: [classId], references: [id])
+  createdAt DateTime @default(now())
 }

@@ -3,6 +3,7 @@ import prisma from "../../config/prisma.js";
 import AppError from "../../utils/AppError.js";
 import jwt from "jsonwebtoken";
 import { generateAccessToken, generateRefreshToken } from "../../utils/jwt.js";
+import { isValidEmail } from "../../utils/validators.js";
 
 export const registerService = async (data) => {
   const { name, email, password } = data;
@@ -15,6 +16,10 @@ export const registerService = async (data) => {
   if (existingEmail) {
     throw new AppError("Email is already registered", 409);
   }
+  if (!isValidEmail(email)) {
+    throw new AppError("Invalid email address.", 400);
+  }
+
   const user = await prisma.user.create({
     data: {
       name: name,

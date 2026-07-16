@@ -1,5 +1,6 @@
 import prisma from "../../config/prisma.js";
 import AppError from "../../utils/AppError.js";
+import { isValidEmail } from "../../utils/validators.js";
 
 export const createFeedback = async (data) => {
   let { name, email, rating, message } = data;
@@ -9,16 +10,10 @@ export const createFeedback = async (data) => {
   message = message?.trim();
   rating = Number(rating);
 
-  // Email validation
-  if (email) {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    if (!emailRegex.test(email)) {
-      throw new AppError("Invalid email format", 400);
-    }
+  if (!isValidEmail(email)) {
+    throw new AppError("Invalid email address", 400);
   }
 
-  // Rating validation
   if (Number.isNaN(rating) || rating < 1 || rating > 5) {
     throw new AppError("Rating must be between 1 and 5", 400);
   }
