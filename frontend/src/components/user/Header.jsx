@@ -27,7 +27,7 @@ const Header = () => {
   return (
     <>
       <header className="my-3">
-        <nav className="w-5xl flex mx-auto justify-between items-center">
+        <nav className="w-6xl flex mx-auto justify-between items-center">
           <div>
             <NavLink to="/" end>
               <img src="https://placehold.co/50" alt="DoBu Martial Arts Logo" />
