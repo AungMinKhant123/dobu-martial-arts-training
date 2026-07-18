@@ -1,5 +1,6 @@
 import prisma from "../../config/prisma.js";
 import AppError from "../../utils/AppError.js";
+import { isValidEmail, isValidPhone } from "../../utils/validators.js";
 
 export const createEnquiry = async (data) => {
   const name = data.name?.trim();
@@ -19,17 +20,13 @@ export const createEnquiry = async (data) => {
   }
 
   // Email validation
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-  if (!emailRegex.test(email)) {
-    throw new AppError("Invalid email format", 400);
+  if (!isValidEmail(email)) {
+    throw new AppError("Invalid email address.", 400);
   }
 
   // Phone validation
-  const phoneRegex = /^[0-9+\-\s]{8,15}$/;
-
-  if (!phoneRegex.test(phone)) {
-    throw new AppError("Invalid phone number", 400);
+  if (!isValidPhone(phone)) {
+    throw new AppError("Invalid phone number.", 400);
   }
 
   // Subject validation
