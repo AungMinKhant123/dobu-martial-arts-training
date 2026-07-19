@@ -6,6 +6,9 @@ import authRoutes from "./modules/auth/auth.routes.js";
 import classRoutes from "./modules/class/class.routes.js";
 import enrollmentRoutes from "./modules/enrollment/enrollment.routes.js";
 import homeRoutes from "./modules/home/home.routes.js";
+import adminDashboardRoutes from "./modules/admin-dashboard/dashboard.routes.js";
+import adminClassesRoutes from "./modules/class/admin.class.routes.js";
+import adminInstructorsRoutes from "./modules/instructor/admin.instructor.routes.js";
 import { errorHandler } from "./middleware/error.middleware.js";
 
 const app = express();
@@ -17,12 +20,18 @@ app.get("/", (req, res) => {
   res.json({ message: "Do bu martial arts api is running" });
 });
 
-app.use("/api/enquiries", enquiryRoutes);
-app.use("/api/feedbacks", feedbackRoutes);
-app.use("/api/auth", authRoutes);
+app.use("/api/home", homeRoutes);
 app.use("/api/classes", classRoutes);
 app.use("/api/enrollments", enrollmentRoutes);
-app.use("/api/home", homeRoutes);
+app.use("/api/enquiries", enquiryRoutes);
+app.use("/api/feedbacks", feedbackRoutes);
+
+app.use("/api/auth", authRoutes);
+
+// admin
+app.use("/api/admin/dashboard", adminDashboardRoutes);
+app.use("/api/admin/classes", adminClassesRoutes);
+app.use("/api/admin/instructors", adminInstructorsRoutes);
 
 app.use(errorHandler);
 

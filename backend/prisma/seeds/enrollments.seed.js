@@ -1,0 +1,26 @@
+export const enrollments = [
+  {
+    firstName: "Michael",
+    lastName: "Brown",
+    email: "michael@gmail.com",
+    phone: "0911122233",
+    dob: new Date("2000-05-15"),
+    gender: "MALE",
+    address: "Yangon",
+    membership: "Basic",
+    classTitle: "Beginner Karate",
+    status: "APPROVED",
+  },
+  {
+    firstName: "Sophia",
+    lastName: "Wilson",
+    email: "sophia@gmail.com",
+    phone: "0922233344",
+    dob: new Date("1999-09-20"),
+    gender: "FEMALE",
+    address: "Bangkok",
+    membership: "Premium",
+    classTitle: null,
+    status: "PENDING",
+  },
+];

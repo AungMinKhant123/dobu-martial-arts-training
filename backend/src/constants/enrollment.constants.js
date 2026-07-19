@@ -1,0 +1,1 @@
+export const ENROLLMENT_STATUS = ["PENDING", "APPROVED", "REJECTED"];
