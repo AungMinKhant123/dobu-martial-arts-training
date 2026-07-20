@@ -142,7 +142,7 @@ model Enquiry {
 model Membership {
   id String @id @default(cuid())
 
-  name        String
+  name        String @unique
   description String
   duration    Int
   price       Float
@@ -224,8 +224,7 @@ model Member {
 model Instructor {
   id String @id @default(cuid())
 
-  firstName String
-  lastName  String
+  name String
 
   email String @unique
   phone String?
@@ -319,6 +318,7 @@ model Class {
 
   level ClassLevel
   imageUrl String?
+  imagePublicId   String?
 
   minAge Int
   duration Int
