@@ -4,6 +4,7 @@ import Header from "../components/user/Header";
 import Footer from "../components/user/Footer";
 import Home from "../pages/user/Home";
 import AboutUs from "../pages/user/AboutUs";
+import ChatbaseWidget from "../components/user/ChatbaseWidget";
 
 const UserLayout = () => {
   return (
@@ -15,6 +16,7 @@ const UserLayout = () => {
           <Route path="about-us" element={<AboutUs />} />
         </Routes>
       </main>
+      <ChatbaseWidget />
       <Footer />
     </>
   );
