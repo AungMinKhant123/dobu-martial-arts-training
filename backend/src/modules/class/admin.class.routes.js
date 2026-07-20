@@ -4,6 +4,8 @@ import {
   deleteAdminClassController,
   getAdminClassByIdController,
   getAdminClassesController,
+  publishAdminClassController,
+  unpublishAdminClassController,
   updateAdminClassController,
 } from "./admin.class.controller.js";
 import { authenticate } from "../../middleware/authenticate.middleware.js";
@@ -12,11 +14,11 @@ import upload from "../../middleware/cloudinary.middleware.js";
 
 const router = express.Router();
 
-router.get("/", authenticate, authorize("ADMIN"), getAdminClassesController);
+router.get("/", getAdminClassesController);
 router.get(
   "/:id",
-  authenticate,
-  authorize("ADMIN"),
+  //   authenticate,
+  //   authorize("ADMIN"),
   getAdminClassByIdController,
 );
 router.post(
@@ -39,5 +41,9 @@ router.delete(
   authorize("ADMIN"),
   deleteAdminClassController,
 );
+
+router.patch("/:id/publish", publishAdminClassController);
+
+router.patch("/:id/unpublish", unpublishAdminClassController);
 
 export default router;

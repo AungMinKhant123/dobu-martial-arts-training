@@ -9,6 +9,8 @@ import {
   deleteAdminClassService,
   getAdminClassByIdService,
   getAdminClassesService,
+  publishAdminClassService,
+  unpublishAdminClassService,
   updateAdminClassService,
 } from "./admin.class.service.js";
 export const getAdminClassesController = async (req, res, next) => {
@@ -84,15 +86,12 @@ export const getAdminClassByIdController = async (req, res, next) => {
 };
 
 export const createAdminClassController = async (req, res, next) => {
-  console.log(req.body);
-  console.log(req.file);
   try {
     const {
       title,
       description,
       martialArt,
       level,
-      imageUrl,
       minAge,
       duration,
       overview,
@@ -126,7 +125,6 @@ export const createAdminClassController = async (req, res, next) => {
         description: description.trim(),
         martialArt,
         level,
-        imageUrl,
         minAge: Number(minAge),
         duration: Number(duration),
         overview,
@@ -207,6 +205,36 @@ export const deleteAdminClassController = async (req, res, next) => {
     res.status(200).json({
       success: true,
       message: "Class deleted successfully.",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const publishAdminClassController = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    const result = await publishAdminClassService(id);
+
+    res.status(200).json({
+      message: "Class published successfully",
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const unpublishAdminClassController = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    const result = await unpublishAdminClassService(id);
+
+    res.status(200).json({
+      message: "Class unpublished successfully",
+      data: result,
     });
   } catch (error) {
     next(error);

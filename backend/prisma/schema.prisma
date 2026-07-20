@@ -67,6 +67,14 @@ enum MartialArt {
   KUNG_FU
 }
 
+enum NotificationEntityType {
+  ENQUIRY
+  ENROLLMENT
+  BLOG
+  FEEDBACK
+  MEMBER
+}
+
 //User
 model User {
   id       String @id @default(cuid())
@@ -95,6 +103,9 @@ model Notification {
   title   String
   message String
   type    NotificationType
+
+  entityId   String?
+  entityType NotificationEntityType?
 
   recipients NotificationRecipient[]
 
@@ -394,6 +405,7 @@ model Blog {
   content String @db.LongText
 
   imageUrl String?
+  imagePublicId   String?
 
   isPublished Boolean @default(false)
 
