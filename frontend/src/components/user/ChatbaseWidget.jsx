@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-export default function ChatbaseWidget() {
+const ChatbaseWidget = () => {
   useEffect(() => {
     if (window.chatbase) return;
 
@@ -24,4 +24,6 @@ export default function ChatbaseWidget() {
   }, []);
 
   return null;
-}
+};
+
+export default ChatbaseWidget;
