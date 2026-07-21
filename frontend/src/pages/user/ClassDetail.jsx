@@ -93,32 +93,32 @@ const ClassDetail = () => {
       </div>
 
       {/* Info Row */}
-      <div className="flex flex-wrap justify-center gap-x-16 gap-y-6 mb-16">
+      <div className="flex flex-wrap justify-center gap-x-16 gap-y-8 mb-10">
         <div>
-          <div className="flex items-center gap-2 font-semibold mb-1">
-            <Signal className="w-5 h-5" />
-            Level
+          <div className="flex items-center gap-3 mb-2">
+            <Signal size={32} className="text-amber-400 shrink-0" />
+            <h4 className="text-xl font-semibold">Level</h4>
           </div>
           <p className="opacity-90">{level}</p>
         </div>
         <div>
-          <div className="flex items-center gap-2 font-semibold mb-1">
-            <Users className="w-5 h-5" />
-            Age Group
+          <div className="flex items-center gap-3 mb-2">
+            <Users size={32} className="text-amber-400 shrink-0" />
+            <h4 className="text-xl font-semibold">Age Group</h4>
           </div>
           <p className="opacity-90">{ageGroup}</p>
         </div>
         <div>
-          <div className="flex items-center gap-2 font-semibold mb-1">
-            <Clock className="w-5 h-5" />
-            Duration
+          <div className="flex items-center gap-3 mb-2">
+            <Clock size={32} className="text-amber-400 shrink-0" />
+            <h4 className="text-xl font-semibold">Duration</h4>
           </div>
           <p className="opacity-90">{duration}</p>
         </div>
         <div>
-          <div className="flex items-center gap-2 font-semibold mb-1">
-            <Award className="w-5 h-5" />
-            Belt Requirement
+          <div className="flex items-center gap-3 mb-2">
+            <Award size={32} className="text-amber-400 shrink-0" />
+            <h4 className="text-xl font-semibold">Belt Requirement</h4>
           </div>
           <p className="opacity-90">{beltRequirement}</p>
         </div>
