@@ -123,3 +123,32 @@ export const sendCustomerEnrollmentEmail = async ({
     console.error("Customer enrollment email failed:", error.message);
   }
 };
+
+export const sendEnquiryReplyEmail = async ({
+  email,
+  customerName,
+  subject,
+  message,
+}) => {
+  try {
+    await sendEmail({
+      to: email,
+      subject: subject,
+      html: `
+      <h3>Hello ${customerName},</h3>
+
+      <p>${message}</p>
+
+      <br/>
+
+      <p>
+      Regards,<br/>
+      Dobu Martial Arts Team
+      </p>
+    `,
+    });
+  } catch (error) {
+    console.error("Enquiry Reply email failed:", error.message);
+    throw error;
+  }
+};

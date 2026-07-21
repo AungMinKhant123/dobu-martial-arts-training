@@ -61,26 +61,6 @@ export const getAdminBlogsService = async ({
   };
 };
 
-export const getAdminBlogByIdService = async (id) => {
-  const blog = await prisma.blog.findUnique({
-    where: {
-      id,
-    },
-    include: {
-      author: {
-        select: {
-          id: true,
-          name: true,
-        },
-      },
-    },
-  });
-  if (!blog) {
-    throw new AppError("Blog not found", 404);
-  }
-  return blog;
-};
-
 export const getAdminBlogStatisticsService = async () => {
   const [totalBlogs, publishedBlogs, draftBlogs] = await Promise.all([
     prisma.blog.count(),
@@ -100,6 +80,26 @@ export const getAdminBlogStatisticsService = async () => {
     publishedBlogs,
     draftBlogs,
   };
+};
+
+export const getAdminBlogByIdService = async (id) => {
+  const blog = await prisma.blog.findUnique({
+    where: {
+      id,
+    },
+    include: {
+      author: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+    },
+  });
+  if (!blog) {
+    throw new AppError("Blog not found", 404);
+  }
+  return blog;
 };
 
 export const createAdminBlogService = async (

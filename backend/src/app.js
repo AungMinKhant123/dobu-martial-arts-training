@@ -11,6 +11,7 @@ import adminDashboardRoutes from "./modules/admin-dashboard/dashboard.routes.js"
 import adminClassesRoutes from "./modules/class/admin.class.routes.js";
 import adminBlogsRoutes from "./modules/blog/admin.blog.routes.js";
 import adminInstructorsRoutes from "./modules/instructor/admin.instructor.routes.js";
+import adminEnquiriesRoutes from "./modules/enquiry/admin.enquiry.routes.js";
 import { errorHandler } from "./middleware/error.middleware.js";
 
 const app = express();
@@ -36,6 +37,7 @@ app.use("/api/admin/dashboard", adminDashboardRoutes);
 app.use("/api/admin/classes", adminClassesRoutes);
 app.use("/api/admin/instructors", adminInstructorsRoutes);
 app.use("/api/admin/blogs", adminBlogsRoutes);
+app.use("/api/admin/enquiries", adminEnquiriesRoutes);
 
 app.use(errorHandler);
 

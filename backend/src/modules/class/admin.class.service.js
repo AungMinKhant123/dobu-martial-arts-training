@@ -4,8 +4,8 @@ import { deleteFromCloudinary } from "../../utils/deleteFromCloudinary.js";
 import { uploadToCloudinary } from "../../utils/uploadToCloudinary.js";
 
 export const getAdminClassesService = async ({
-  page = page || 1,
-  limit = limit || 10,
+  page = 1,
+  limit = 10,
   search,
   isActive,
   level,
@@ -31,6 +31,7 @@ export const getAdminClassesService = async ({
   if (level) {
     where.level = level;
   }
+
   if (martialArt) {
     where.martialArt = martialArt;
   }
@@ -39,7 +40,7 @@ export const getAdminClassesService = async ({
     where.instructorId = instructorId;
   }
 
-  const [classes, total] = await Promise.all([
+  const [classes, filteredTotal] = await Promise.all([
     prisma.class.findMany({
       where,
       skip,
@@ -73,9 +74,31 @@ export const getAdminClassesService = async ({
     pagination: {
       page,
       limit,
-      total,
-      totalPages: Math.ceil(total / limit),
+      total: filteredTotal,
+      totalPages: Math.ceil(filteredTotal / limit),
     },
+  };
+};
+
+export const getAdminClassStatisticsService = async () => {
+  const [totalClasses, publishedClasses, unpublishedClasses] =
+    await Promise.all([
+      prisma.class.count(),
+      prisma.class.count({
+        where: {
+          isPublished: true,
+        },
+      }),
+      prisma.class.count({
+        where: {
+          isPublished: false,
+        },
+      }),
+    ]);
+  return {
+    totalClasses,
+    publishedClasses,
+    unpublishedClasses,
   };
 };
 

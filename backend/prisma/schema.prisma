@@ -91,6 +91,7 @@ model User {
   blogs Blog[]
 
   notificationRecipients NotificationRecipient[]
+  repliedEnquiries Enquiry[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -142,6 +143,14 @@ model Enquiry {
   message String
 
   status EnquiryStatus @default(PENDING)
+
+  replySubject String?
+  replyMessage String? @db.Text
+
+  repliedAt DateTime?
+
+  repliedById String?
+  repliedBy User? @relation(fields: [repliedById], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

@@ -1,14 +1,14 @@
+import { ClassLevel, MartialArt } from "@prisma/client";
 import {
   ALLOWED_CLASS_SORT_FIELDS,
   ALLOWED_CLASS_SORT_ORDERS,
-  CLASS_LEVELS,
-  MARTIAL_ARTS,
 } from "../../constants/class.constants.js";
 import {
   createAdminClassService,
   deleteAdminClassService,
   getAdminClassByIdService,
   getAdminClassesService,
+  getAdminClassStatisticsService,
   publishAdminClassService,
   unpublishAdminClassService,
   updateAdminClassService,
@@ -28,7 +28,6 @@ export const getAdminClassesController = async (req, res, next) => {
     } = req.query;
 
     const safePage = Math.max(Number.parseInt(page, 10) || 1, 1);
-
     const safeLimit = Math.min(
       Math.max(Number.parseInt(limit, 10) || 10, 1),
       100,
@@ -42,11 +41,13 @@ export const getAdminClassesController = async (req, res, next) => {
       ? sortOrder
       : "desc";
 
-    const safeMartialArt = MARTIAL_ARTS.includes(martialArt)
+    const safeMartialArt = Object.values(MartialArt).includes(martialArt)
       ? martialArt
       : undefined;
 
-    const safeLevel = CLASS_LEVELS.includes(level) ? level : undefined;
+    const safeLevel = Object.values(ClassLevel).includes(level)
+      ? level
+      : undefined;
 
     const safeIsActive =
       isActive === "true" ? true : isActive === "false" ? false : undefined;
@@ -69,6 +70,15 @@ export const getAdminClassesController = async (req, res, next) => {
       sortBy: safeSortBy,
       sortOrder: safeSortOrder,
     });
+    res.status(200).json(result);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getAdminClassStatisticsController = async (req, res, next) => {
+  try {
+    const result = await getAdminClassStatisticsService();
     res.status(200).json(result);
   } catch (error) {
     next(error);
@@ -240,3 +250,4 @@ export const unpublishAdminClassController = async (req, res, next) => {
     next(error);
   }
 };
+
