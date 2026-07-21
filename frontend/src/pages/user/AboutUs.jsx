@@ -1,10 +1,20 @@
-import { Shield, Heart, Users, Award, Dumbbell, ShowerHead } from "lucide-react";
+import {
+  Shield,
+  Heart,
+  Users,
+  Award,
+  Dumbbell,
+  ShowerHead,
+} from "lucide-react";
 import Button from "../../components/Button";
 
 const philosophyPoints = [
   { label: "Discipline", text: "Building mental fortitude and self-control" },
   { label: "Strength", text: "Developing physical and inner power" },
-  { label: "Community", text: "Fostering supportive relationships and mutual respect" },
+  {
+    label: "Community",
+    text: "Fostering supportive relationships and mutual respect",
+  },
 ];
 
 const specialityPoints = [
@@ -101,33 +111,33 @@ const AboutUs = () => {
       </section>
 
       {/* Our Story */}
-<section className="max-w-4xl mx-auto text-center px-6 py-16">
-  {/* TODO: swap in the real dragon logo asset once ready */}
-  <div className="flex items-center justify-center gap-6 mb-6">
-    <img
-      src="https://placehold.co/100?text=%F0%9F%90%89"
-      alt=""
-      aria-hidden="true"
-      className="hidden md:block w-20 h-20"
-    />
-    <h2 className="font-['Poppins'] font-bold text-4xl text-(--primary-color)">
-      Our Story
-    </h2>
-    <img
-      src="https://placehold.co/100?text=%F0%9F%90%89"
-      alt=""
-      aria-hidden="true"
-      className="hidden md:block w-20 h-20"
-    />
-  </div>
-  <p className="max-w-3xl mx-auto opacity-90 leading-relaxed">
-    DoBu Martial Arts was founded with a simple powerful vision to
-    create a space where individuals of all ages and backgrounds can
-    discover the transformative power of martial arts. Our name "DoBu"
-    represents the warrior's path — a journey of continuous growth,
-    discipline, and self-discovery.
-  </p>
-</section>
+      <section className="max-w-4xl mx-auto text-center px-6 py-16">
+        {/* TODO: swap in the real dragon logo asset once ready */}
+        <div className="flex items-center justify-center gap-6 mb-6">
+          <img
+            src="https://placehold.co/100?text=%F0%9F%90%89"
+            alt=""
+            aria-hidden="true"
+            className="hidden md:block w-20 h-20"
+          />
+          <h2 className="font-['Poppins'] font-bold text-4xl text-(--primary-color)">
+            Our Story
+          </h2>
+          <img
+            src="https://placehold.co/100?text=%F0%9F%90%89"
+            alt=""
+            aria-hidden="true"
+            className="hidden md:block w-20 h-20"
+          />
+        </div>
+        <p className="max-w-3xl mx-auto opacity-90 leading-relaxed">
+          DoBu Martial Arts was founded with a simple powerful vision to create
+          a space where individuals of all ages and backgrounds can discover the
+          transformative power of martial arts. Our name "DoBu" represents the
+          warrior's path — a journey of continuous growth, discipline, and
+          self-discovery.
+        </p>
+      </section>
 
       {/* Philosophy / Speciality */}
       <section className="max-w-6xl mx-auto px-6 py-8 grid md:grid-cols-2 gap-8">
@@ -136,9 +146,9 @@ const AboutUs = () => {
             Our Philosophy
           </h3>
           <p className="opacity-90 mb-4 leading-relaxed">
-            At DoBu Martial Arts, we believe that martial arts training is
-            more than just physical exercise. Our philosophy is built on
-            three core pillars:
+            At DoBu Martial Arts, we believe that martial arts training is more
+            than just physical exercise. Our philosophy is built on three core
+            pillars:
           </p>
           <ul className="list-disc list-inside space-y-2 opacity-90">
             {philosophyPoints.map((point) => (
@@ -193,9 +203,9 @@ const AboutUs = () => {
             Our Environment
           </h2>
           <p className="opacity-90 max-w-2xl mx-auto">
-            Every detail of our facility has been carefully designed to
-            provide the optimal environment for martial arts training,
-            fitness and recovery.
+            Every detail of our facility has been carefully designed to provide
+            the optimal environment for martial arts training, fitness and
+            recovery.
           </p>
         </div>
 
