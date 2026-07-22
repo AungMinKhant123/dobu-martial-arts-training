@@ -1,0 +1,29 @@
+import { useEffect } from "react";
+
+const ChatbaseWidget = () => {
+  useEffect(() => {
+    if (window.chatbase) return;
+
+    window.chatbase = (...args) => {
+      if (!window.chatbase.q) {
+        window.chatbase.q = [];
+      }
+      window.chatbase.q.push(args);
+    };
+
+    const script = document.createElement("script");
+    script.src = "https://www.chatbase.co/embed.min.js";
+    script.id = "KqvYHPYQbOjc4-4kkErnr";
+    script.domain = "www.chatbase.co";
+
+    document.body.appendChild(script);
+
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
+
+  return null;
+};
+
+export default ChatbaseWidget;
