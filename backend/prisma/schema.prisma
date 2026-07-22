@@ -67,6 +67,14 @@ enum MartialArt {
   KUNG_FU
 }
 
+enum NotificationEntityType {
+  ENQUIRY
+  ENROLLMENT
+  BLOG
+  FEEDBACK
+  MEMBER
+}
+
 //User
 model User {
   id       String @id @default(cuid())
@@ -83,6 +91,7 @@ model User {
   blogs Blog[]
 
   notificationRecipients NotificationRecipient[]
+  repliedEnquiries Enquiry[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -95,6 +104,9 @@ model Notification {
   title   String
   message String
   type    NotificationType
+
+  entityId   String?
+  entityType NotificationEntityType?
 
   recipients NotificationRecipient[]
 
@@ -131,6 +143,14 @@ model Enquiry {
   message String
 
   status EnquiryStatus @default(PENDING)
+
+  replySubject String?
+  replyMessage String? @db.Text
+
+  repliedAt DateTime?
+
+  repliedById String?
+  repliedBy User? @relation(fields: [repliedById], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -394,6 +414,7 @@ model Blog {
   content String @db.LongText
 
   imageUrl String?
+  imagePublicId   String?
 
   isPublished Boolean @default(false)
 

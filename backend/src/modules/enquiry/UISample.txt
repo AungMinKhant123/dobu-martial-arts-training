@@ -1,0 +1,115 @@
+┌──────────────────────────────────────────────────────────────────────────────────────────────┐
+│                              ENQUIRY MANAGEMENT                                              │
+└──────────────────────────────────────────────────────────────────────────────────────────────┘
+
+Search
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ 🔍 Search by customer, email, phone, subject, or message...      [Search] │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+
+Filters
+
+┌──────────────┐  ┌──────────────┐  ┌──────────────┐
+│ Status       │  │ Sort By      │  │ Sort Order   │
+│ All ▼        │  │ Received ▼   │  │ Desc ▼       │
+└──────────────┘  └──────────────┘  └──────────────┘
+
+
+Showing 1–10 of 48 enquiries
+
+┌────┬────────────────┬──────────────────────────┬──────────────┬────────────┬────────────────────┬──────────────┐
+│ #  │ Customer       │ Email                    │ Subject      │ Status     │ Received           │ Action       │
+├────┼────────────────┼──────────────────────────┼──────────────┼────────────┼────────────────────┼──────────────┤
+│ 1  │ John Smith     │ john@gmail.com           │ Karate Trial │ 🟡 Pending │ 21 Jul 2026 10:15 │ 👁 View      │
+│ 2  │ Alice Brown    │ alice@gmail.com          │ Membership   │ 🔵 Read    │ 20 Jul 2026 16:40 │ 👁 View      │
+│ 3  │ David Lee      │ david@gmail.com          │ Schedule     │ 🟢 Replied │ 20 Jul 2026 13:25 │ 👁 View      │
+│ 4  │ Emma Wilson    │ emma@gmail.com           │ Muay Thai    │ 🟡 Pending │ 20 Jul 2026 09:10 │ 👁 View      │
+└────┴────────────────┴──────────────────────────┴──────────────┴────────────┴────────────────────┴──────────────┘
+
+                           < Previous     1 2 3 4     Next >
+                           
+
+
+← Back to Enquiries
+
+
+┌──────────────────────────────────────────────────────────────────────────────────────┐
+│                              ENQUIRY DETAILS                                          │
+└──────────────────────────────────────────────────────────────────────────────────────┘
+
+
+Customer Information
+
+Name
+John Smith
+
+Email
+john@gmail.com
+
+Phone
++66 912345678
+
+Subject
+Karate Trial Class
+
+Status
+
+🟡 READ
+
+
+Received
+
+21 Jul 2026 10:15 AM
+
+
+
+Customer Message
+
+┌──────────────────────────────────────────────────────────────────────────────────────┐
+│ Hello,                                                                               │
+│                                                                                      │
+│ I would like to know whether beginners can join the Karate class.                    │
+│ Also, could you tell me the monthly fee and class schedule?                          │
+│                                                                                      │
+│ Thank you.                                                                           │
+└──────────────────────────────────────────────────────────────────────────────────────┘
+
+
+
+────────────────────────────────────────────────────────────────────────────────────────
+
+
+
+Reply to Customer
+
+Subject
+
+┌──────────────────────────────────────────────────────────────────────────────────────┐
+│ Re: Karate Trial Class                                                               │
+└──────────────────────────────────────────────────────────────────────────────────────┘
+
+
+Message
+
+┌──────────────────────────────────────────────────────────────────────────────────────┐
+│ Hi John,                                                                             │
+│                                                                                      │
+│ Thank you for contacting Dobu Martial Arts.                                          │
+│                                                                                      │
+│ Beginners are welcome to join our Karate classes.                                    │
+│                                                                                      │
+│ The monthly membership fee is $50, and your first trial lesson is free.              │
+│                                                                                      │
+│ We have classes every Monday, Wednesday and Saturday.                                │
+│                                                                                      │
+│ Please let us know if you'd like to reserve a trial class.                           │
+│                                                                                      │
+│ Best regards,                                                                         │
+│ Dobu Martial Arts                                                                     │
+└──────────────────────────────────────────────────────────────────────────────────────┘
+
+
+
+                         [ Cancel ]        [ Send Reply ]

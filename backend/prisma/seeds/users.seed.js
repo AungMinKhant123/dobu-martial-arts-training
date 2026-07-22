@@ -13,4 +13,10 @@ export const users = async () => [
     password: await bcrypt.hash("Password123!", 10),
     role: "USER",
   },
+  {
+    name: "Cena",
+    email: "cena@example.com",
+    password: await bcrypt.hash("1", 10),
+    role: "ADMIN",
+  },
 ];

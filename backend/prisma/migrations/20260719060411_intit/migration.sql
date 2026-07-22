@@ -19,6 +19,8 @@ CREATE TABLE `Notification` (
     `title` VARCHAR(191) NOT NULL,
     `message` VARCHAR(191) NOT NULL,
     `type` ENUM('ENQUIRY', 'ENROLLMENT', 'FEEDBACK') NOT NULL,
+    `entityId` VARCHAR(191) NULL,
+    `entityType` ENUM('ENQUIRY', 'ENROLLMENT', 'BLOG', 'FEEDBACK', 'MEMBER') NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
     PRIMARY KEY (`id`)
@@ -65,6 +67,7 @@ CREATE TABLE `Membership` (
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
+    UNIQUE INDEX `Membership_name_key`(`name`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -115,8 +118,7 @@ CREATE TABLE `Member` (
 -- CreateTable
 CREATE TABLE `Instructor` (
     `id` VARCHAR(191) NOT NULL,
-    `firstName` VARCHAR(191) NOT NULL,
-    `lastName` VARCHAR(191) NOT NULL,
+    `name` VARCHAR(191) NOT NULL,
     `email` VARCHAR(191) NOT NULL,
     `phone` VARCHAR(191) NULL,
     `biography` TEXT NOT NULL,
@@ -180,6 +182,7 @@ CREATE TABLE `Class` (
     `martialArt` ENUM('KARATE', 'JUDO', 'TAEKWONDO', 'AIKIDO', 'JIU_JITSU', 'MUAY_THAI', 'KUNG_FU') NOT NULL,
     `level` ENUM('BEGINNER', 'INTERMEDIATE', 'ADVANCED') NOT NULL,
     `imageUrl` VARCHAR(191) NULL,
+    `imagePublicId` VARCHAR(191) NULL,
     `minAge` INTEGER NOT NULL,
     `duration` INTEGER NOT NULL,
     `overview` TEXT NULL,

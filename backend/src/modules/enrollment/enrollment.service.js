@@ -1,6 +1,8 @@
 import prisma from "../../config/prisma.js";
 import AppError from "../../utils/AppError.js";
 import { isValidEmail, isValidPhone } from "../../utils/validators.js";
+import { sendCustomerEnrollmentEmail } from "../email/email.service.js";
+import { createEnrollmentNotification } from "../notification/notification.service.js";
 
 export const createEnrollmentService = async (body) => {
   let {
@@ -113,6 +115,14 @@ export const createEnrollmentService = async (body) => {
       membership: true,
       class: true,
     },
+  });
+
+  await createEnrollmentNotification(enrollment);
+  await sendCustomerEnrollmentEmail({
+    firstName,
+    email,
+    membership: enrollment.membership.name,
+    className: enrollment.class?.title,
   });
   return enrollment;
 };

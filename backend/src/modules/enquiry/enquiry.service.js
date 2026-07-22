@@ -1,6 +1,11 @@
 import prisma from "../../config/prisma.js";
 import AppError from "../../utils/AppError.js";
 import { isValidEmail, isValidPhone } from "../../utils/validators.js";
+import {
+  sendAdminEnquiryEmail,
+  sendCustomerEnquiryEmail,
+} from "../email/email.service.js";
+import { createEnquiryNotification } from "../notification/notification.service.js";
 
 export const createEnquiry = async (data) => {
   const name = data.name?.trim();
@@ -48,6 +53,14 @@ export const createEnquiry = async (data) => {
       message,
     },
   });
+
+  const { admins } = await createEnquiryNotification(enquiry);
+
+  await sendCustomerEnquiryEmail({ name, email, subject });
+
+  await Promise.all(
+    admins.map((admin) => sendAdminEnquiryEmail({ admin, enquiry })),
+  );
 
   return enquiry;
 };

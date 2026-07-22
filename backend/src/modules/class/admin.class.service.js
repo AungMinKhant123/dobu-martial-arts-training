@@ -4,8 +4,8 @@ import { deleteFromCloudinary } from "../../utils/deleteFromCloudinary.js";
 import { uploadToCloudinary } from "../../utils/uploadToCloudinary.js";
 
 export const getAdminClassesService = async ({
-  page = page || 1,
-  limit = limit || 10,
+  page = 1,
+  limit = 10,
   search,
   isActive,
   level,
@@ -31,6 +31,7 @@ export const getAdminClassesService = async ({
   if (level) {
     where.level = level;
   }
+
   if (martialArt) {
     where.martialArt = martialArt;
   }
@@ -39,7 +40,7 @@ export const getAdminClassesService = async ({
     where.instructorId = instructorId;
   }
 
-  const [classes, total] = await Promise.all([
+  const [classes, filteredTotal] = await Promise.all([
     prisma.class.findMany({
       where,
       skip,
@@ -54,6 +55,13 @@ export const getAdminClassesService = async ({
             name: true,
           },
         },
+        timetables: {
+          select: {
+            id: true,
+            startTime: true,
+            endTime: true,
+          },
+        },
       },
     }),
     prisma.class.count({
@@ -66,9 +74,31 @@ export const getAdminClassesService = async ({
     pagination: {
       page,
       limit,
-      total,
-      totalPages: Math.ceil(total / limit),
+      total: filteredTotal,
+      totalPages: Math.ceil(filteredTotal / limit),
     },
+  };
+};
+
+export const getAdminClassStatisticsService = async () => {
+  const [totalClasses, publishedClasses, unpublishedClasses] =
+    await Promise.all([
+      prisma.class.count(),
+      prisma.class.count({
+        where: {
+          isPublished: true,
+        },
+      }),
+      prisma.class.count({
+        where: {
+          isPublished: false,
+        },
+      }),
+    ]);
+  return {
+    totalClasses,
+    publishedClasses,
+    unpublishedClasses,
   };
 };
 
@@ -139,7 +169,6 @@ export const createAdminClassService = async (data, file) => {
 
   // Upload image to Cloudinary
   const uploadedImage = await uploadToCloudinary(file.buffer, "dobu/classes");
-  console.log(uploadedImage);
 
   // Create class
   const newClass = await prisma.class.create({
@@ -265,4 +294,46 @@ export const deleteAdminClassService = async (id) => {
   });
 
   return;
+};
+
+export const publishAdminClassService = async (id) => {
+  const existingClass = await prisma.class.findUnique({
+    where: { id },
+  });
+
+  if (!existingClass) {
+    throw new AppError("Class not found", 404);
+  }
+
+  if (existingClass.isPublished) {
+    throw new AppError("Class is already published", 400);
+  }
+
+  return prisma.class.update({
+    where: { id },
+    data: {
+      isPublished: true,
+    },
+  });
+};
+
+export const unpublishAdminClassService = async (id) => {
+  const existingClass = await prisma.class.findUnique({
+    where: { id },
+  });
+
+  if (!existingClass) {
+    throw new AppError("Class not found", 404);
+  }
+
+  if (!existingClass.isPublished) {
+    throw new AppError("Class is already unpublished", 400);
+  }
+
+  return prisma.class.update({
+    where: { id },
+    data: {
+      isPublished: false,
+    },
+  });
 };
