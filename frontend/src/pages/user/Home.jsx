@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   UserCheck,
   Users,
@@ -15,7 +16,9 @@ import {
   Star,
   ArrowRight,
 } from "lucide-react";
+import { Link } from "react-router";
 import Button from "../../components/Button";
+import { getAllInstructors } from "../../services/instructorService";
 
 const dragonDecor = "https://placehold.co/100x100?text=%F0%9F%90%89";
 
@@ -179,45 +182,6 @@ const membershipHighlights = [
   },
 ];
 
-const instructors = [
-  {
-    name: "Sensei David Lee",
-    image: "https://placehold.co/300x300?text=David+Lee",
-    credentials: [
-      "6th Dan Black Belt",
-      "15 Years Experience",
-      "Karate. Self Defense",
-    ],
-  },
-  {
-    name: "Coach Ryan",
-    image: "https://placehold.co/300x300?text=Coach+Ryan",
-    credentials: [
-      "Professional Trainer",
-      "10 Years Experience",
-      "Muay Thai. Fitness",
-    ],
-  },
-  {
-    name: "Sensei Chen",
-    image: "https://placehold.co/300x300?text=Sensei+Chen",
-    credentials: [
-      "6th Dan Black Belt",
-      "14 Years Experience",
-      "Judo. Competition",
-    ],
-  },
-  {
-    name: "Santos",
-    image: "https://placehold.co/300x300?text=Santos",
-    credentials: [
-      "6th Dan Black Belt",
-      "12 Years Experience",
-      "Grappling. Submissions",
-    ],
-  },
-];
-
 const blogPosts = [
   {
     title: "Top 5 Benefits of Martial Arts Training",
@@ -318,6 +282,25 @@ const SectionHeading = ({
 );
 
 const Home = () => {
+  const [instructors, setInstructors] = useState([]);
+  const [loadingInstructors, setLoadingInstructors] = useState(true);
+
+  useEffect(() => {
+    const loadInstructors = async () => {
+      try {
+        const data = await getAllInstructors();
+        setInstructors(data);
+      } catch (error) {
+        console.error("Failed to load instructors", error);
+        setInstructors([]);
+      } finally {
+        setLoadingInstructors(false);
+      }
+    };
+
+    loadInstructors();
+  }, []);
+
   return (
     <div className="w-6xl mx-auto px-4">
       {/* Hero */}
@@ -553,37 +536,66 @@ const Home = () => {
           dragons
         />
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-3xl mx-auto">
-          {instructors.map(({ name, image, credentials }) => (
-            <div
-              key={name}
-              className="border border-(--accent-color) rounded-lg px-4 py-8 text-center"
-            >
-              <img
-                src={image}
-                alt={name}
-                className="w-32 h-32 rounded-full object-cover mx-auto mb-4 border-2 border-(--accent-color)"
-              />
-              <h4 className="font-['Poppins'] font-bold text-lg mb-3">
-                {name}
-              </h4>
-              <ul className="space-y-2 mb-6 text-sm inline-block text-left">
-                {credentials.map((c, i) => {
-                  const Icon = i === 0 ? Medal : i === 1 ? Network : Swords;
-                  return (
-                    <li key={c} className="flex items-center gap-2 opacity-90">
-                      <Icon className="w-4 h-4 text-amber-400" />
-                      {c}
-                    </li>
-                  );
-                })}
-              </ul>
-              <div>
-                <Button variant="accent" size="sm">
-                  View Profile <ArrowRight className="w-4 h-4 ml-1" />
-                </Button>
-              </div>
-            </div>
-          ))}
+          {loadingInstructors ? (
+            <p className="col-span-2 text-center opacity-80">
+              Loading instructors...
+            </p>
+          ) : instructors.length === 0 ? (
+            <p className="col-span-2 text-center opacity-80">
+              Instructor profiles will appear here soon.
+            </p>
+          ) : (
+            instructors.map((instructor) => {
+              const credentials = [
+                instructor.beltLevel || "Certified Instructor",
+                `${instructor.experienceYears ?? 0} Years Experience`,
+                ...(instructor.specialties
+                  ?.slice(0, 1)
+                  .map((specialty) => specialty.name) || []),
+              ];
+
+              return (
+                <div
+                  key={instructor.id}
+                  className="border border-(--accent-color) rounded-lg px-4 py-8 text-center"
+                >
+                  <img
+                    src={
+                      instructor.imageUrl ||
+                      "https://placehold.co/300x300?text=Instructor"
+                    }
+                    alt={instructor.name}
+                    className="w-32 h-32 rounded-full object-cover mx-auto mb-4 border-2 border-(--accent-color)"
+                  />
+                  <h4 className="font-['Poppins'] font-bold text-lg mb-3">
+                    {instructor.name}
+                  </h4>
+                  <ul className="space-y-2 mb-6 text-sm inline-block text-left">
+                    {credentials.map((c, i) => {
+                      const Icon = i === 0 ? Medal : i === 1 ? Network : Swords;
+                      return (
+                        <li
+                          key={`${instructor.id}-${c}`}
+                          className="flex items-center gap-2 opacity-90"
+                        >
+                          <Icon className="w-4 h-4 text-amber-400" />
+                          {c}
+                        </li>
+                      );
+                    })}
+                  </ul>
+                  <div>
+                    <Link
+                      to={`/instructors/${instructor.id}`}
+                      className="inline-flex items-center justify-center rounded-lg bg-(--accent-color) px-3 py-1.5 text-sm font-medium text-white transition-colors duration-200 hover:bg-red-700"
+                    >
+                      View Profile <ArrowRight className="w-4 h-4 ml-1" />
+                    </Link>
+                  </div>
+                </div>
+              );
+            })
+          )}
         </div>
       </section>
 
