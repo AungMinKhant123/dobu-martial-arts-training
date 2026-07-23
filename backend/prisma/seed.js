@@ -11,6 +11,10 @@ import { enquiries } from "./seeds/enquiries.seed.js";
 import { enrollments } from "./seeds/enrollments.seed.js";
 import { members } from "./seeds/members.seed.js";
 import { feedbacks } from "./seeds/feedbacks.seed.js";
+import { instructorQualifications } from "./seeds/instructorQualifications.seed.js";
+import { instructorCertifications } from "./seeds/instructorCertifications.seed.js";
+import { instructorAchievements } from "./seeds/instructorAchievements.seed.js";
+import { instructorSpecialties } from "./seeds/instructorSpecialties.seed.js";
 
 async function main() {
   console.log("🌱 Start seeding...");
@@ -51,6 +55,70 @@ async function main() {
     data: instructors,
     skipDuplicates: true,
   });
+
+  // Qualifications
+  for (const item of instructorQualifications) {
+    const instructor = await prisma.instructor.findUnique({
+      where: {
+        email: item.instructorEmail,
+      },
+    });
+    if (!instructor) continue;
+    await prisma.instructorQualification.create({
+      data: {
+        title: item.title,
+        instructorId: instructor.id,
+      },
+    });
+  }
+
+  // Certifications
+  for (const item of instructorCertifications) {
+    const instructor = await prisma.instructor.findUnique({
+      where: {
+        email: item.instructorEmail,
+      },
+    });
+    if (!instructor) continue;
+    await prisma.instructorCertification.create({
+      data: {
+        name: item.name,
+        instructorId: instructor.id,
+      },
+    });
+  }
+
+  // Achievements
+  for (const item of instructorAchievements) {
+    const instructor = await prisma.instructor.findUnique({
+      where: {
+        email: item.instructorEmail,
+      },
+    });
+    if (!instructor) continue;
+    await prisma.instructorAchievement.create({
+      data: {
+        title: item.title,
+        instructorId: instructor.id,
+      },
+    });
+  }
+
+  // Specialties
+  for (const item of instructorSpecialties) {
+    const instructor = await prisma.instructor.findUnique({
+      where: {
+        email: item.instructorEmail,
+      },
+    });
+    if (!instructor) continue;
+    await prisma.instructorSpecialty.create({
+      data: {
+        name: item.name,
+        instructorId: instructor.id,
+      },
+    });
+  }
 
   // Classes
   for (const item of classes) {

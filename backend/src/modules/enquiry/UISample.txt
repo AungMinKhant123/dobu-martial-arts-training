@@ -56,14 +56,15 @@ Karate Trial Class
 
 Status
 
-🟡 READ
+🟡 READ (pending, read, replied)
 
+mark as read
 
 Received
 
 21 Jul 2026 10:15 AM
 
-
+generate message powered by ai
 
 Customer Message
 

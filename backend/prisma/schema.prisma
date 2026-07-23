@@ -75,6 +75,17 @@ enum NotificationEntityType {
   MEMBER
 }
 
+enum BeltLevel {
+  WHITE
+  YELLOW
+  ORANGE
+  GREEN
+  BLUE
+  PURPLE
+  BROWN
+  BLACK
+}
+
 //User
 model User {
   id       String @id @default(cuid())
@@ -252,8 +263,9 @@ model Instructor {
   biography String @db.Text
 
   imageUrl String?
+  imagePublicId String?
 
-  beltLevel String?
+  beltLevel BeltLevel?
 
   experienceYears Int?
 

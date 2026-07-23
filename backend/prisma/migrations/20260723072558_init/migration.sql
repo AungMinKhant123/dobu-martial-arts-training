@@ -49,6 +49,10 @@ CREATE TABLE `Enquiry` (
     `subject` VARCHAR(191) NOT NULL,
     `message` VARCHAR(191) NOT NULL,
     `status` ENUM('PENDING', 'READ', 'REPLIED') NOT NULL DEFAULT 'PENDING',
+    `replySubject` VARCHAR(191) NULL,
+    `replyMessage` TEXT NULL,
+    `repliedAt` DATETIME(3) NULL,
+    `repliedById` VARCHAR(191) NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
@@ -123,7 +127,8 @@ CREATE TABLE `Instructor` (
     `phone` VARCHAR(191) NULL,
     `biography` TEXT NOT NULL,
     `imageUrl` VARCHAR(191) NULL,
-    `beltLevel` VARCHAR(191) NULL,
+    `imagePublicId` VARCHAR(191) NULL,
+    `beltLevel` ENUM('WHITE', 'YELLOW', 'ORANGE', 'GREEN', 'BLUE', 'PURPLE', 'BROWN', 'BLACK') NULL,
     `experienceYears` INTEGER NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
@@ -233,6 +238,7 @@ CREATE TABLE `Blog` (
     `summary` TEXT NULL,
     `content` LONGTEXT NOT NULL,
     `imageUrl` VARCHAR(191) NULL,
+    `imagePublicId` VARCHAR(191) NULL,
     `isPublished` BOOLEAN NOT NULL DEFAULT false,
     `publishedAt` DATETIME(3) NULL,
     `authorId` VARCHAR(191) NOT NULL,
@@ -274,6 +280,9 @@ ALTER TABLE `NotificationRecipient` ADD CONSTRAINT `NotificationRecipient_notifi
 
 -- AddForeignKey
 ALTER TABLE `NotificationRecipient` ADD CONSTRAINT `NotificationRecipient_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Enquiry` ADD CONSTRAINT `Enquiry_repliedById_fkey` FOREIGN KEY (`repliedById`) REFERENCES `User`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Enrollment` ADD CONSTRAINT `Enrollment_membershipId_fkey` FOREIGN KEY (`membershipId`) REFERENCES `Membership`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
