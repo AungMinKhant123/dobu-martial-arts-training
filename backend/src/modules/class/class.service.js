@@ -6,7 +6,10 @@ export const getPublishedClasses = async () => {
     where: {
       isActive: true,
     },
-    include: { instructor: true },
+    include: {
+      instructor: true,
+      timetables: true,
+    },
     orderBy: {
       createdAt: "desc",
     },
@@ -16,7 +19,20 @@ export const getPublishedClasses = async () => {
 
 export const getClassById = async (id) => {
   const classData = await prisma.class.findUnique({
-    include: { instructor: true },
+    include: {
+      instructor: {
+        include: {
+          qualifications: true,
+          certifications: true,
+          achievements: true,
+          specialties: true,
+        },
+      },
+      timetables: true,
+      learningOutcomes: {
+        orderBy: { order: "asc" },
+      },
+    },
     where: {
       id: id,
     },
