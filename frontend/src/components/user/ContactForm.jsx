@@ -1,4 +1,4 @@
-import {useState} from "react";
+import { useState } from "react";
 
 const ContactForm = () => {
   const [formData, setFormData] = useState({
@@ -34,6 +34,7 @@ const ContactForm = () => {
     setFormData({
       name: "",
       email: "",
+      phone: "",
       subject: "",
       message: "",
       agree: false,
@@ -60,6 +61,15 @@ const ContactForm = () => {
           type="email"
           name="email"
           placeholder="Email Address"
+          value={formData.email}
+          onChange={handleChange}
+          className="h-15 w-full rounded-xl border-2 border-red-600 bg-transparent px-8 text-[20px] text-white outline-none placeholder:text-gray-400"
+        />
+
+        <input
+          type="tel"
+          name="phone"
+          placeholder="+959 123 445 789"
           value={formData.email}
           onChange={handleChange}
           className="h-15 w-full rounded-xl border-2 border-red-600 bg-transparent px-8 text-[20px] text-white outline-none placeholder:text-gray-400"
