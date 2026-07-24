@@ -1,0 +1,26 @@
+{
+  "name": "dobu-martial-arts-training",
+  "version": "1.0.0",
+  "description": "A modern, responsive full-stack web application developed for **DoBu Martial Arts**, designed to promote the gym, streamline business operations, and provide an engaging digital experience for members and visitors.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\"",
+    "start": "concurrently \"npm start --prefix backend\" \"npm run dev --prefix frontend\"",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AungMinKhant123/dobu-martial-arts-training.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/AungMinKhant123/dobu-martial-arts-training/issues"
+  },
+  "homepage": "https://github.com/AungMinKhant123/dobu-martial-arts-training#readme"
+}
