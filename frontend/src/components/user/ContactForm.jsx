@@ -1,13 +1,16 @@
-import {useState} from "react";
+import { useState } from "react";
 
 const ContactForm = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    phone: "",
     subject: "",
     message: "",
     agree: false,
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [statusMessage, setStatusMessage] = useState({ type: "", text: "" });
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -18,26 +21,62 @@ const ContactForm = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setStatusMessage({ type: "", text: "" });
 
     if (!formData.agree) {
-      alert("Please agree to the terms and privacy policy.");
+      setStatusMessage({
+        type: "error",
+        text: "Please agree to the terms and privacy policy.",
+      });
       return;
     }
 
-    console.log("Form Submitted:", formData);
+    setIsSubmitting(true);
 
-    // TODO: Send data to your backend/API
+    try {
+      const response = await fetch("/api/enquiries", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          subject: formData.subject,
+          message: formData.message,
+        }),
+      });
 
-    // Reset form
-    setFormData({
-      name: "",
-      email: "",
-      subject: "",
-      message: "",
-      agree: false,
-    });
+      const result = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        throw new Error(result.message || "Unable to send your enquiry.");
+      }
+
+      setStatusMessage({
+        type: "success",
+        text: result.message || "Your enquiry has been sent successfully.",
+      });
+
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        subject: "",
+        message: "",
+        agree: false,
+      });
+    } catch (error) {
+      setStatusMessage({
+        type: "error",
+        text: error.message || "Something went wrong. Please try again.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -66,6 +105,15 @@ const ContactForm = () => {
         />
 
         <input
+          type="tel"
+          name="phone"
+          placeholder="Phone Number"
+          value={formData.phone}
+          onChange={handleChange}
+          className="h-15 w-full rounded-xl border-2 border-red-600 bg-transparent px-8 text-[20px] text-white outline-none placeholder:text-gray-400"
+        />
+
+        <input
           type="text"
           name="subject"
           placeholder="Subject Line"
@@ -86,7 +134,7 @@ const ContactForm = () => {
           <input
             type="checkbox"
             name="agree"
-            value={formData.agree}
+            checked={formData.agree}
             onChange={handleChange}
             className="h-5 w-5 accent-red-600"
           />
@@ -96,11 +144,22 @@ const ContactForm = () => {
           </span>
         </label>
 
+        {statusMessage.text ? (
+          <p
+            className={`text-[18px] ${
+              statusMessage.type === "error" ? "text-red-400" : "text-green-400"
+            }`}
+          >
+            {statusMessage.text}
+          </p>
+        ) : null}
+
         <button
           type="submit"
-          className="flex h-15 w- items-center justify-center gap-3 rounded-md bg-red-600 text-[25px] font-bold text-white transition hover:bg-red-500"
+          disabled={isSubmitting}
+          className="flex h-15 w-full items-center justify-center gap-3 rounded-md bg-red-600 text-[25px] font-bold text-white transition hover:bg-red-500 disabled:cursor-not-allowed disabled:bg-red-800"
         >
-          Send Message <span>➤</span>
+          {isSubmitting ? "Sending..." : "Send Message"} <span>➤</span>
         </button>
       </form>
     </div>
