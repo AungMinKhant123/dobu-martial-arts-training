@@ -30,22 +30,22 @@ export const createEnrollmentService = async (body) => {
     throw new AppError("All required fields must be provided.", 400);
   }
 
-  firstName = firstName.trim();
-  lastName = lastName.trim();
-  email = email.trim().toLowerCase();
-  phone = phone.trim();
-  address = address.trim();
-  membershipId = membershipId.trim();
+  const cleanFirstName = firstName.trim();
+  const cleanLastName = lastName.trim();
+  const cleanEmail = email.trim().toLowerCase();
+  const cleanPhone = phone.trim();
+  const cleanAddress = address.trim();
+  const cleanMembershipId = membershipId.trim();
 
   if (classId) {
     classId = classId.trim();
   }
 
-  if (!isValidEmail(email)) {
+  if (!isValidEmail(cleanEmail)) {
     throw new AppError("Invalid email address.", 400);
   }
 
-  if (!isValidPhone(phone)) {
+  if (!isValidPhone(cleanPhone)) {
     throw new AppError("Invalid phone number.", 400);
   }
 
@@ -101,14 +101,14 @@ export const createEnrollmentService = async (body) => {
 
   const enrollment = await prisma.enrollment.create({
     data: {
-      firstName,
-      lastName,
-      email,
-      phone,
+      firstName: cleanFirstName,
+      lastName: cleanLastName,
+      email: cleanEmail,
+      phone: cleanPhone,
       dob: dateOfBirth,
       gender,
-      address,
-      membershipId,
+      address: cleanAddress,
+      membershipId: cleanMembershipId,
       classId: classId || null,
     },
     include: {
