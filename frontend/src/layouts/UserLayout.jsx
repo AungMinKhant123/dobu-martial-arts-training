@@ -9,6 +9,7 @@ import ClassDetail from "../pages/user/ClassDetail";
 import Contact from "../pages/user/Contact.jsx";
 import Blog from "../pages/user/Blog";
 import Payment from "../pages/user/Payment";
+import Enrollment from "../pages/user/Enrollment";
 import InstructorDetail from "../pages/user/InstructorDetail";
 import ChatbaseWidget from "../components/user/ChatbaseWidget.jsx";
 
@@ -26,6 +27,7 @@ const UserLayout = () => {
           <Route path="contact" element={<Contact />} />
           <Route path="blog" element={<Blog />} />
           <Route path="payment" element={<Payment />} />
+          <Route path="enrollment" element={<Enrollment />} />
         </Routes>
       </main>
       <ChatbaseWidget />
