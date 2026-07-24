@@ -4,6 +4,7 @@ import Header from "../components/user/Header";
 import Footer from "../components/user/Footer";
 import Home from "../pages/user/Home";
 import AboutUs from "../pages/user/AboutUs";
+import Classes from "../pages/user/Classes";
 import ClassDetail from "../pages/user/ClassDetail";
 import Contact from "../pages/user/Contact.jsx";
 import Blog from "../pages/user/Blog";
@@ -19,7 +20,8 @@ const UserLayout = () => {
         <Routes>
           <Route index element={<Home />} />
           <Route path="about-us" element={<AboutUs />} />
-          <Route path="classes" element={<ClassDetail />} />
+          <Route path="classes" element={<Classes />} />
+          <Route path="classes/:classId" element={<ClassDetail />} />
           <Route path="instructors/:id" element={<InstructorDetail />} />
           <Route path="contact" element={<Contact />} />
           <Route path="blog" element={<Blog />} />
