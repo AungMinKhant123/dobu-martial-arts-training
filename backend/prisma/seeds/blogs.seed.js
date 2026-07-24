@@ -6,7 +6,8 @@ export const blogs = [
       "Discover how Karate improves physical fitness, confidence, and discipline.",
     content:
       "Karate develops strength, flexibility, discipline, confidence, and self-defense skills. Regular training helps students improve both physical and mental health while building respect and focus.",
-    imageUrl: "/uploads/blogs/karate.jpg",
+    imageUrl:
+      "https://res.cloudinary.com/d5tnusci/image/upload/v1784870140/BLOG1_jswnww.jpg",
     imagePublicId: "dobu-blogs/karate",
     isPublished: true,
   },
@@ -16,7 +17,8 @@ export const blogs = [
     summary: "Find the right martial art based on your goals and interests.",
     content:
       "Choosing a martial art depends on your goals. Whether you want fitness, competition, self-defense, or personal development, each martial art offers unique benefits.",
-    imageUrl: "/uploads/blogs/first-martial-art.jpg",
+    imageUrl:
+      "https://res.cloudinary.com/d5tnusci/image/upload/v1784870140/BLOG1_jswnww.jpg",
     imagePublicId: "dobu-blogs/first-martial-art",
     isPublished: true,
   },
@@ -26,7 +28,8 @@ export const blogs = [
     summary: "Learn how martial arts training develops focus and resilience.",
     content:
       "Martial arts training teaches patience, discipline, confidence, and emotional control. Students learn how to overcome challenges inside and outside the training hall.",
-    imageUrl: "/uploads/blogs/mental-strength.jpg",
+    imageUrl:
+      "https://res.cloudinary.com/d5tnusci/image/upload/v1784870140/BLOG1_jswnww.jpg",
     imagePublicId: "dobu-blogs/mental-strength",
     isPublished: true,
   },
@@ -36,7 +39,8 @@ export const blogs = [
     summary: "Improve your performance with proper nutrition habits.",
     content:
       "A balanced diet containing protein, carbohydrates, healthy fats, and enough water helps martial artists maintain energy and recover faster after training.",
-    imageUrl: "/uploads/blogs/nutrition.jpg",
+    imageUrl:
+      "https://res.cloudinary.com/d5tnusci/image/upload/v1784870140/BLOG1_jswnww.jpg",
     imagePublicId: "dobu-blogs/nutrition",
     isPublished: true,
   },
@@ -46,7 +50,8 @@ export const blogs = [
     summary: "Essential tips for students starting Taekwondo.",
     content:
       "Beginners should focus on basic techniques, proper footwork, flexibility training, and consistent practice to build strong foundations in Taekwondo.",
-    imageUrl: "/uploads/blogs/taekwondo.jpg",
+    imageUrl:
+      "https://res.cloudinary.com/d5tnusci/image/upload/v1784870140/BLOG1_jswnww.jpg",
     imagePublicId: "dobu-blogs/taekwondo",
     isPublished: true,
   },
@@ -56,7 +61,8 @@ export const blogs = [
     summary: "Prevent injuries and prepare your body for martial arts.",
     content:
       "Warm-up exercises increase blood flow, improve mobility, and prepare muscles and joints for intense martial arts movements.",
-    imageUrl: "/uploads/blogs/warmup.jpg",
+    imageUrl:
+      "https://res.cloudinary.com/d5tnusci/image/upload/v1784870140/BLOG1_jswnww.jpg",
     imagePublicId: "dobu-blogs/warmup",
     isPublished: true,
   },
@@ -67,7 +73,8 @@ export const blogs = [
       "How martial arts help children develop confidence and discipline.",
     content:
       "Children who practice martial arts develop focus, coordination, respect, teamwork, and confidence while learning valuable life skills.",
-    imageUrl: "/uploads/blogs/kids-martial-arts.jpg",
+    imageUrl:
+      "https://res.cloudinary.com/d5tnusci/image/upload/v1784870140/BLOG1_jswnww.jpg",
     imagePublicId: "dobu-blogs/kids-martial-arts",
     isPublished: true,
   },
@@ -77,7 +84,8 @@ export const blogs = [
     summary: "Explore the origins and principles of Aikido.",
     content:
       "Aikido is a Japanese martial art that focuses on balance, harmony, and redirecting an opponent's energy instead of relying on strength alone.",
-    imageUrl: "/uploads/blogs/aikido.jpg",
+    imageUrl:
+      "https://res.cloudinary.com/d5tnusci/image/upload/v1784870140/BLOG1_jswnww.jpg",
     imagePublicId: "dobu-blogs/aikido",
     isPublished: true,
   },
@@ -87,7 +95,8 @@ export const blogs = [
     summary: "Discover how martial arts create lifelong discipline.",
     content:
       "Martial arts teach consistency, responsibility, goal setting, and respect. These lessons help students succeed in training and daily life.",
-    imageUrl: "/uploads/blogs/discipline.jpg",
+    imageUrl:
+      "https://res.cloudinary.com/d5tnusci/image/upload/v1784870140/BLOG1_jswnww.jpg",
     imagePublicId: "dobu-blogs/discipline",
     isPublished: true,
   },
@@ -97,7 +106,8 @@ export const blogs = [
     summary: "Why recovery days are essential for martial artists.",
     content:
       "Rest allows muscles to recover, reduces injury risk, and improves overall performance. A good training plan includes proper recovery time.",
-    imageUrl: "/uploads/blogs/recovery.jpg",
+    imageUrl:
+      "https://res.cloudinary.com/d5tnusci/image/upload/v1784870140/BLOG1_jswnww.jpg",
     imagePublicId: "dobu-blogs/recovery",
     isPublished: true,
   },

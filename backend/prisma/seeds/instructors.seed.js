@@ -6,7 +6,8 @@ export const instructors = [
     biography: "Black belt instructor with over 15 years of experience.",
     beltLevel: "WHITE",
     experienceYears: 15,
-    imageUrl: "/uploads/instructors/takashi.jpg",
+    imageUrl:
+      "https://res.cloudinary.com/d5tnusci/image/upload/v1784869273/davidlee_tkwc7h.jpg",
   },
   {
     name: "Sarah Lee",
@@ -15,7 +16,8 @@ export const instructors = [
     biography: "Taekwondo specialist and national champion.",
     beltLevel: "GREEN",
     experienceYears: 12,
-    imageUrl: "/uploads/instructors/sarah.jpg",
+    imageUrl:
+      "https://res.cloudinary.com/d5tnusci/image/upload/v1784869450/chen_etdafu.jpg",
   },
   {
     name: "David Chen",
@@ -24,6 +26,17 @@ export const instructors = [
     biography: "Brazilian Jiu-Jitsu coach.",
     beltLevel: "BROWN",
     experienceYears: 10,
-    imageUrl: "/uploads/instructors/david.jpg",
+    imageUrl:
+      "https://res.cloudinary.com/d5tnusci/image/upload/v1784869495/ryan_ojsgqh.jpg",
+  },
+  {
+    name: "John Doe",
+    email: "johndoe@dojo.com",
+    phone: "0911111111",
+    biography: "Brazilian Jiu-Jitsu coach.",
+    beltLevel: "WHITE",
+    experienceYears: 12,
+    imageUrl:
+      "https://res.cloudinary.com/d5tnusci/image/upload/v1784869647/santo_jsjbw6.jpg",
   },
 ];
