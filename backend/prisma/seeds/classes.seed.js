@@ -12,7 +12,8 @@ export const classes = [
     isActive: true,
     isPublished: true,
     instructorEmail: "takashi@dojo.com",
-    imageUrl: "/uploads/classes/karate.jpg",
+    imageUrl:
+      "https://res.cloudinary.com/d5tnusci/image/upload/v1784869878/Jiu-Jitsu_jq3uja.jpg",
   },
   {
     title: "Advanced Karate",
@@ -27,7 +28,8 @@ export const classes = [
     isActive: true,
     isPublished: true,
     instructorEmail: "takashi@dojo.com",
-    imageUrl: "/uploads/classes/advanced-karate.jpg",
+    imageUrl:
+      "https://res.cloudinary.com/d5tnusci/image/upload/v1784869878/judo_dbcyrf.jpg",
   },
   {
     title: "Karate Kids Training",
@@ -42,7 +44,8 @@ export const classes = [
     isActive: true,
     isPublished: true,
     instructorEmail: "takashi@dojo.com",
-    imageUrl: "/uploads/classes/kids-karate.jpg",
+    imageUrl:
+      "https://res.cloudinary.com/d5tnusci/image/upload/v1784869879/Kids_Martial_Arts_hczkkm.jpg",
   },
   {
     title: "Intermediate Karate",
@@ -57,7 +60,8 @@ export const classes = [
     isActive: true,
     isPublished: true,
     instructorEmail: "takashi@dojo.com",
-    imageUrl: "/uploads/classes/intermediate-karate.jpg",
+    imageUrl:
+      "https://res.cloudinary.com/d5tnusci/image/upload/v1784869879/karate_o1wrvm.jpg",
   },
 
   {
@@ -73,7 +77,8 @@ export const classes = [
     isActive: true,
     isPublished: true,
     instructorEmail: "sarah@dojo.com",
-    imageUrl: "/uploads/classes/beginner-taekwondo.jpg",
+    imageUrl:
+      "https://res.cloudinary.com/d5tnusci/image/upload/v1784869879/Kids_Martial_Arts_hczkkm.jpg",
   },
   {
     title: "Advanced Taekwondo",
@@ -88,7 +93,8 @@ export const classes = [
     isActive: true,
     isPublished: true,
     instructorEmail: "sarah@dojo.com",
-    imageUrl: "/uploads/classes/taekwondo.jpg",
+    imageUrl:
+      "https://res.cloudinary.com/d5tnusci/image/upload/v1784869879/Kids_Martial_Arts_hczkkm.jpg",
   },
   {
     title: "Taekwondo Competition Training",
@@ -103,7 +109,8 @@ export const classes = [
     isActive: true,
     isPublished: true,
     instructorEmail: "sarah@dojo.com",
-    imageUrl: "/uploads/classes/taekwondo-competition.jpg",
+    imageUrl:
+      "https://res.cloudinary.com/d5tnusci/image/upload/v1784869879/Kids_Martial_Arts_hczkkm.jpg",
   },
 
   {
@@ -119,7 +126,8 @@ export const classes = [
     isActive: true,
     isPublished: true,
     instructorEmail: "david@dojo.com",
-    imageUrl: "/uploads/classes/bjj.jpg",
+    imageUrl:
+      "https://res.cloudinary.com/d5tnusci/image/upload/v1784869879/Kids_Martial_Arts_hczkkm.jpg",
   },
   {
     title: "Advanced Brazilian Jiu Jitsu",
@@ -134,7 +142,8 @@ export const classes = [
     isActive: true,
     isPublished: true,
     instructorEmail: "david@dojo.com",
-    imageUrl: "/uploads/classes/bjj-advanced.jpg",
+    imageUrl:
+      "https://res.cloudinary.com/d5tnusci/image/upload/v1784869879/Kids_Martial_Arts_hczkkm.jpg",
   },
   {
     title: "Jiu Jitsu Self Defense",
@@ -149,7 +158,8 @@ export const classes = [
     isActive: true,
     isPublished: true,
     instructorEmail: "david@dojo.com",
-    imageUrl: "/uploads/classes/bjj-defense.jpg",
+    imageUrl:
+      "https://res.cloudinary.com/d5tnusci/image/upload/v1784869879/Kids_Martial_Arts_hczkkm.jpg",
   },
 
   {
@@ -165,7 +175,8 @@ export const classes = [
     isActive: true,
     isPublished: true,
     instructorEmail: "takashi@dojo.com",
-    imageUrl: "/uploads/classes/judo.jpg",
+    imageUrl:
+      "https://res.cloudinary.com/d5tnusci/image/upload/v1784869879/Kids_Martial_Arts_hczkkm.jpg",
   },
   {
     title: "Judo Advanced Techniques",
@@ -180,7 +191,8 @@ export const classes = [
     isActive: true,
     isPublished: true,
     instructorEmail: "takashi@dojo.com",
-    imageUrl: "/uploads/classes/judo-advanced.jpg",
+    imageUrl:
+      "https://res.cloudinary.com/d5tnusci/image/upload/v1784869879/Kids_Martial_Arts_hczkkm.jpg",
   },
 
   {
@@ -196,7 +208,8 @@ export const classes = [
     isActive: true,
     isPublished: true,
     instructorEmail: "david@dojo.com",
-    imageUrl: "/uploads/classes/muay-thai.jpg",
+    imageUrl:
+      "https://res.cloudinary.com/d5tnusci/image/upload/v1784869879/Kids_Martial_Arts_hczkkm.jpg",
   },
   {
     title: "Muay Thai Fighter Training",
@@ -211,7 +224,8 @@ export const classes = [
     isActive: true,
     isPublished: true,
     instructorEmail: "david@dojo.com",
-    imageUrl: "/uploads/classes/muay-thai-fighter.jpg",
+    imageUrl:
+      "https://res.cloudinary.com/d5tnusci/image/upload/v1784869879/Kids_Martial_Arts_hczkkm.jpg",
   },
 
   {
@@ -227,7 +241,8 @@ export const classes = [
     isActive: true,
     isPublished: true,
     instructorEmail: "takashi@dojo.com",
-    imageUrl: "/uploads/classes/kungfu.jpg",
+    imageUrl:
+      "https://res.cloudinary.com/d5tnusci/image/upload/v1784869879/Kids_Martial_Arts_hczkkm.jpg",
   },
   {
     title: "Kung Fu Weapons Training",
@@ -242,7 +257,8 @@ export const classes = [
     isActive: true,
     isPublished: true,
     instructorEmail: "takashi@dojo.com",
-    imageUrl: "/uploads/classes/kungfu-weapons.jpg",
+    imageUrl:
+      "https://res.cloudinary.com/d5tnusci/image/upload/v1784869879/Kids_Martial_Arts_hczkkm.jpg",
   },
 
   {
@@ -258,7 +274,8 @@ export const classes = [
     isActive: true,
     isPublished: true,
     instructorEmail: "takashi@dojo.com",
-    imageUrl: "/uploads/classes/aikido.jpg",
+    imageUrl:
+      "https://res.cloudinary.com/d5tnusci/image/upload/v1784869879/Kids_Martial_Arts_hczkkm.jpg",
   },
   {
     title: "Aikido Intermediate",
@@ -273,7 +290,8 @@ export const classes = [
     isActive: true,
     isPublished: true,
     instructorEmail: "takashi@dojo.com",
-    imageUrl: "/uploads/classes/aikido-intermediate.jpg",
+    imageUrl:
+      "https://res.cloudinary.com/d5tnusci/image/upload/v1784869879/Kids_Martial_Arts_hczkkm.jpg",
   },
 
   {
@@ -289,7 +307,8 @@ export const classes = [
     isActive: true,
     isPublished: true,
     instructorEmail: "sarah@dojo.com",
-    imageUrl: "/uploads/classes/fitness.jpg",
+    imageUrl:
+      "https://res.cloudinary.com/d5tnusci/image/upload/v1784869879/Kids_Martial_Arts_hczkkm.jpg",
   },
   {
     title: "Elite Martial Arts Program",
@@ -304,6 +323,7 @@ export const classes = [
     isActive: true,
     isPublished: true,
     instructorEmail: "sarah@dojo.com",
-    imageUrl: "/uploads/classes/elite.jpg",
+    imageUrl:
+      "https://res.cloudinary.com/d5tnusci/image/upload/v1784869879/Kids_Martial_Arts_hczkkm.jpg",
   },
 ];

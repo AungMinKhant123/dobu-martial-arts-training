@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 export const users = async () => [
   {
     name: "Administrator",
-    email: "admin@dobumartialarts.com",
+    email: "hopetech040726@gmail.com",
     password: await bcrypt.hash("Admin@123", 10),
     role: "ADMIN",
   },
