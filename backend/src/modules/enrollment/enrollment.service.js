@@ -1,7 +1,10 @@
 import prisma from "../../config/prisma.js";
 import AppError from "../../utils/AppError.js";
 import { isValidEmail, isValidPhone } from "../../utils/validators.js";
-import { sendCustomerEnrollmentEmail } from "../email/email.service.js";
+import {
+  sendAdminEnrollmentEmail,
+  sendCustomerEnrollmentEmail,
+} from "../email/email.service.js";
 import { createEnrollmentNotification } from "../notification/notification.service.js";
 
 export const createEnrollmentService = async (body) => {
@@ -117,12 +120,16 @@ export const createEnrollmentService = async (body) => {
     },
   });
 
-  await createEnrollmentNotification(enrollment);
+  const admins = await createEnrollmentNotification(enrollment);
   await sendCustomerEnrollmentEmail({
     firstName,
     email,
     membership: enrollment.membership.name,
     className: enrollment.class?.title,
   });
+  await Promise.all(
+    admins.map((admin) => sendAdminEnrollmentEmail({ admin, enrollment })),
+  );
+
   return enrollment;
 };

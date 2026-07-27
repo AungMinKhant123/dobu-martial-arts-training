@@ -71,6 +71,6 @@ export const createEnrollmentNotification = async (enrollment) => {
       userId: admin.id,
     })),
   });
-
+  console.log(admins);
   return admins;
 };
