@@ -48,7 +48,9 @@ const Header = () => {
               </li>
             ))}
           </ul>
-          <Button variant="primary">Enroll a Class</Button>
+          <Button variant="primary" asChild>
+            <NavLink to="/enrollment">Enroll a Class</NavLink>
+          </Button>
         </nav>
       </header>
     </>

@@ -6,6 +6,7 @@ import {
   Dumbbell,
   ShowerHead,
 } from "lucide-react";
+import { Link } from "react-router";
 import Button from "../../components/Button";
 
 const philosophyPoints = [
@@ -101,12 +102,16 @@ const AboutUs = () => {
           Where the weight tests you and the community lifts you up.
         </p>
         <div className="flex flex-wrap justify-center gap-4">
-          <Button variant="accent" size="lg">
-            Enroll a Class
-          </Button>
-          <Button variant="outline" size="lg">
-            View classes
-          </Button>
+          <Link to="/enrollment">
+            <Button variant="accent" size="lg">
+              Enroll a Class
+            </Button>
+          </Link>
+          <Link to="/classes">
+            <Button variant="outline" size="lg">
+              View classes
+            </Button>
+          </Link>
         </div>
       </section>
 

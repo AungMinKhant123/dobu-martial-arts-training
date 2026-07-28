@@ -3,6 +3,7 @@ const Button = ({
   variant = "primary",
   size = "md",
   className = "",
+  asChild = false,
   ...props
 }) => {
   const baseStyles =
@@ -25,6 +26,10 @@ const Button = ({
   };
 
   const buttonStyles = `${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`;
+
+  if (asChild) {
+    return <div className={buttonStyles}>{children}</div>;
+  }
 
   return (
     <button className={buttonStyles} {...props}>
