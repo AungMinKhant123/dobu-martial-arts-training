@@ -8,6 +8,7 @@ import Classes from "../pages/user/Classes";
 import ClassDetail from "../pages/user/ClassDetail";
 import Contact from "../pages/user/Contact.jsx";
 import Blog from "../pages/user/Blog";
+import BlogDetail from "../pages/user/BlogDetail";
 import Payment from "../pages/user/Payment";
 import Enrollment from "../pages/user/Enrollment";
 import InstructorDetail from "../pages/user/InstructorDetail";
@@ -26,6 +27,7 @@ const UserLayout = () => {
           <Route path="instructors/:id" element={<InstructorDetail />} />
           <Route path="contact" element={<Contact />} />
           <Route path="blog" element={<Blog />} />
+          <Route path="blog/:slug" element={<BlogDetail />} />
           <Route path="payment" element={<Payment />} />
           <Route path="enrollment" element={<Enrollment />} />
         </Routes>
