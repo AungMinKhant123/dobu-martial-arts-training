@@ -20,12 +20,12 @@ const Footer = () => {
                 placeholder="Enter your email"
                 className="bg-[#523d0a] text-white border border-transparent rounded-lg px-4 py-3 text-base w-full focus:outline-none focus:border-[#fbbf24] placeholder-gray-400"
               />
-              <button
-                type="submit"
-                className="bg-[#523d0a] text-white font-medium border border-transparent rounded-lg px-6 py-3 transition hover:bg-[#433207] active:scale-95"
+              <a
+                href="/enrollment"
+                className="bg-[#523d0a] text-white font-medium border border-transparent rounded-lg px-6 py-3 transition hover:bg-[#433207] active:scale-95 text-center"
               >
                 Join
-              </button>
+              </a>
             </form>
 
             <p className="text-xs opacity-80 leading-normal">

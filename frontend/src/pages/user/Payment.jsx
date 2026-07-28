@@ -1,3 +1,4 @@
+import { useLocation } from "react-router";
 import { useState } from "react";
 import { ShieldCheck } from "lucide-react";
 import Button from "../../components/Button";
@@ -5,16 +6,31 @@ import Button from "../../components/Button";
 const cardBrands = ["VISA", "Mastercard", "G Pay", "PayPal"];
 
 const Payment = () => {
+  const location = useLocation();
   const [billingCycle, setBillingCycle] = useState("annual");
   const [selectedBrand, setSelectedBrand] = useState("VISA");
 
   const price = billingCycle === "annual" ? 16 : 20;
+  const successMessage =
+    location.state?.message || "Your enrollment request is ready for payment.";
 
   return (
     <div className="w-6xl mx-auto px-4 py-16">
       <div className="grid md:grid-cols-2 rounded-2xl overflow-hidden">
         {/* Left panel - Class summary */}
         <div className="bg-emerald-50 text-gray-900 p-10">
+          <div className="rounded-xl border border-emerald-200 bg-white/80 p-4 mb-6">
+            <p className="text-sm font-semibold text-emerald-700">
+              Enrollment update
+            </p>
+            <p className="mt-2 text-sm text-gray-700">{successMessage}</p>
+            {location.state?.enrollmentId ? (
+              <p className="mt-2 text-xs text-gray-500">
+                Reference: {location.state.enrollmentId}
+              </p>
+            ) : null}
+          </div>
+
           <div className="border border-gray-300 rounded-xl p-4 flex gap-4 mb-6">
             <img
               src="https://placehold.co/100x100?text=Judo"
@@ -156,7 +172,7 @@ const Payment = () => {
           </div>
 
           <Button variant="accent" size="lg" className="w-full">
-            Pay
+            Continue to Pay (UI only)
           </Button>
         </div>
       </div>

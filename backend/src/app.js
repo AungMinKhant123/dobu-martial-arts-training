@@ -4,6 +4,7 @@ import enquiryRoutes from "./modules/enquiry/enquiry.routes.js";
 import feedbackRoutes from "./modules/feedback/feedback.routes.js";
 import authRoutes from "./modules/auth/auth.routes.js";
 import classRoutes from "./modules/class/class.routes.js";
+import membershipRoutes from "./modules/membership/membership.routes.js";
 import enrollmentRoutes from "./modules/enrollment/enrollment.routes.js";
 import blogRoutes from "./modules/blog/blog.routes.js";
 import homeRoutes from "./modules/home/home.routes.js";
@@ -28,6 +29,7 @@ app.get("/", (req, res) => {
 app.use("/api/home", homeRoutes);
 app.use("/api/instructors", instructorRoutes);
 app.use("/api/classes", classRoutes);
+app.use("/api/memberships", membershipRoutes);
 app.use("/api/enrollments", enrollmentRoutes);
 app.use("/api/enquiries", enquiryRoutes);
 app.use("/api/feedbacks", feedbackRoutes);

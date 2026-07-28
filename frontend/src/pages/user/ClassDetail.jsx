@@ -127,7 +127,12 @@ const ClassDetail = () => {
   const instructorImage =
     instructor?.imageUrl || "https://placehold.co/400x500?text=Instructor";
 
-  const whoCanJoinGroups = ["Children", "Teenagers", "Adults", "All Fitness Levels"];
+  const whoCanJoinGroups = [
+    "Children",
+    "Teenagers",
+    "Adults",
+    "All Fitness Levels",
+  ];
   const ageLabel = minAge ? `${minAge}+ Years` : "All Ages";
 
   return (
@@ -156,7 +161,7 @@ const ClassDetail = () => {
             `https://placehold.co/600x500?text=${encodeURIComponent(title || "Class")}`
           }
           alt={title}
-          className="rounded-lg object-cover w-full max-h-[420px]"
+          className="rounded-lg object-cover w-full max-h-105"
         />
       </div>
 
@@ -215,10 +220,7 @@ const ClassDetail = () => {
           {learningOutcomes && learningOutcomes.length > 0 ? (
             <ul className="space-y-2">
               {learningOutcomes.map((item) => (
-                <li
-                  key={item.id}
-                  className="flex items-start gap-2 opacity-90"
-                >
+                <li key={item.id} className="flex items-start gap-2 opacity-90">
                   <Check className="w-4 h-4 mt-1 shrink-0 text-(--accent-color)" />
                   {item.content}
                 </li>
@@ -237,7 +239,7 @@ const ClassDetail = () => {
             <img
               src={instructorImage}
               alt={instructorName}
-              className="rounded-lg object-cover w-[300px] max-h-[360px]"
+              className="rounded-lg object-cover w-75 max-h-90"
             />
             <div className="text-center md:text-left">
               <p className="opacity-80 mb-1">Your Instructor</p>
@@ -258,10 +260,7 @@ const ClassDetail = () => {
                   </li>
                 )}
                 {(instructor.qualifications || []).slice(0, 1).map((q) => (
-                  <li
-                    key={q.id}
-                    className="flex items-center gap-2 opacity-90"
-                  >
+                  <li key={q.id} className="flex items-center gap-2 opacity-90">
                     <BadgeCheck className="w-4 h-4 text-(--primary-color)" />
                     {q.title}
                   </li>
@@ -334,10 +333,7 @@ const ClassDetail = () => {
             {defaultWhatToBring.map((item, i) => {
               const Icon = i === 1 ? Droplet : Shirt;
               return (
-                <li
-                  key={item}
-                  className="flex items-start gap-2 opacity-90"
-                >
+                <li key={item} className="flex items-start gap-2 opacity-90">
                   <Icon className="w-4 h-4 mt-1 shrink-0 text-(--primary-color)" />
                   {item}
                 </li>
@@ -348,9 +344,11 @@ const ClassDetail = () => {
       </div>
 
       <div className="text-center mb-20">
-        <Button variant="accent" size="lg">
-          Join Now
-        </Button>
+        <Link to="/enrollment">
+          <Button variant="accent" size="lg">
+            Join Now
+          </Button>
+        </Link>
       </div>
 
       {/* Bottom CTA */}
@@ -366,9 +364,11 @@ const ClassDetail = () => {
           Take the first step toward improving your confidence, fitness,
           discipline, and self-defense skills with our {title} program.
         </p>
-        <Button variant="accent" size="lg" className="shrink-0">
-          Book This Class Now
-        </Button>
+        <Link to="/enrollment">
+          <Button variant="accent" size="lg" className="shrink-0">
+            Book This Class Now
+          </Button>
+        </Link>
       </div>
     </div>
   );

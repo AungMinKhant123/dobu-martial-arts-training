@@ -190,7 +190,7 @@ const InstructorDetail = () => {
           {testimonials.map((item) => (
             <div key={item.id} className="flex items-center gap-6 p-4">
               {/* Avatar with Golden Circular Border */}
-              <div className="relative w-28 h-28 flex-shrink-0 rounded-full border-4 border-[#EAB308] overflow-hidden bg-gray-900">
+              <div className="relative w-28 h-28 shrink-0 rounded-full border-4 border-[#EAB308] overflow-hidden bg-gray-900">
                 <img
                   src={item.avatarUrl}
                   alt={`${item.name}'s avatar`}
@@ -257,7 +257,7 @@ const InstructorDetail = () => {
           fitness in a supportive training environment.
         </p>
         <Link
-          to="/"
+          to="/enrollment"
           className="inline-block bg-red-600 text-white px-4 py-2 rounded mt-6"
         >
           Book a Class

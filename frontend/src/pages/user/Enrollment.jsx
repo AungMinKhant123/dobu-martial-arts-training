@@ -1,38 +1,128 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 import { User, Mail, Phone, Calendar, Home } from "lucide-react";
 import Button from "../../components/Button";
 
-const membershipOptions = [
-  "Basic Membership",
-  "Standard Membership",
-  "Premium Membership",
-];
-
-const classOptions = [
-  "Karate",
-  "Muay Thai",
-  "Judo",
-  "Competition Training",
-  "Kids Martial Arts",
-  "Self Defense",
-  "Strength & Conditioning",
-  "Jiu-Jitsu",
-];
+const initialFormState = {
+  firstName: "",
+  lastName: "",
+  email: "",
+  phone: "",
+  dob: "",
+  address: "",
+  gender: "",
+  membershipId: "",
+  classId: "",
+};
 
 const Enrollment = () => {
-  const [membership, setMembership] = useState("");
-  const [classSelection, setClassSelection] = useState("");
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState(initialFormState);
+  const [membershipOptions, setMembershipOptions] = useState([]);
+  const [classOptions, setClassOptions] = useState([]);
   const [agreed, setAgreed] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const isBasic = membership === "Basic Membership";
-  const hasFullAccess =
-    membership === "Standard Membership" || membership === "Premium Membership";
+  const selectedMembership = membershipOptions.find(
+    (option) => option.id === formData.membershipId,
+  );
+  const isBasic = selectedMembership?.name === "Basic";
+  const hasFullAccess = selectedMembership?.allowsAllClasses ?? false;
+
+  useEffect(() => {
+    const fetchOptions = async () => {
+      try {
+        const [membershipRes, classRes] = await Promise.all([
+          fetch("/api/memberships"),
+          fetch("/api/classes"),
+        ]);
+
+        if (!membershipRes.ok || !classRes.ok) {
+          throw new Error("Failed to load enrollment options.");
+        }
+
+        const membershipData = await membershipRes.json();
+        const classData = await classRes.json();
+
+        setMembershipOptions(
+          Array.isArray(membershipData) ? membershipData : [],
+        );
+        setClassOptions(Array.isArray(classData) ? classData : []);
+      } catch (err) {
+        setError(err.message || "Unable to load enrollment options.");
+      }
+    };
+
+    fetchOptions();
+  }, []);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
   const handleMembershipChange = (e) => {
     const value = e.target.value;
-    setMembership(value);
-    if (value !== "Basic Membership") {
-      setClassSelection("");
+    setFormData((prev) => ({ ...prev, membershipId: value, classId: "" }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!agreed) {
+      setError("Please agree to the terms and conditions before continuing.");
+      return;
+    }
+
+    if (!formData.membershipId) {
+      setError("Please choose a membership plan.");
+      return;
+    }
+
+    if (isBasic && !formData.classId) {
+      setError("Please select a class for the Basic membership.");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setError("");
+
+      const payload = {
+        firstName: formData.firstName.trim(),
+        lastName: formData.lastName.trim(),
+        email: formData.email.trim(),
+        phone: formData.phone.trim(),
+        dob: formData.dob,
+        gender: formData.gender,
+        address: formData.address.trim(),
+        membershipId: formData.membershipId,
+        ...(isBasic && formData.classId ? { classId: formData.classId } : {}),
+      };
+
+      const res = await fetch("/api/enrollments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const result = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        throw new Error(result.message || "Enrollment submission failed.");
+      }
+
+      navigate("/payment", {
+        state: {
+          enrollmentId: result?.data?.id,
+          message: result?.message || "Enrollment submitted successfully.",
+        },
+      });
+    } catch (err) {
+      setError(err.message || "Enrollment submission failed.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -54,8 +144,10 @@ const Enrollment = () => {
         Personal Information
       </h2>
 
-      <form className="grid md:grid-cols-2 gap-x-10 gap-y-6 max-w-4xl mx-auto px-8">
-        {/* First Name */}
+      <form
+        onSubmit={handleSubmit}
+        className="grid md:grid-cols-2 gap-x-10 gap-y-6 max-w-4xl mx-auto px-8"
+      >
         <div>
           <label className="block font-semibold mb-2">
             First Name<span className="text-(--accent-color)">*</span>
@@ -64,13 +156,16 @@ const Enrollment = () => {
             <User className="w-4 h-4 opacity-70 shrink-0" />
             <input
               type="text"
+              name="firstName"
+              value={formData.firstName}
+              onChange={handleInputChange}
               placeholder="Enter your first name"
               className="bg-transparent w-full focus:outline-none placeholder-white/50"
+              required
             />
           </div>
         </div>
 
-        {/* Last Name */}
         <div>
           <label className="block font-semibold mb-2">
             Last Name<span className="text-(--accent-color)">*</span>
@@ -79,13 +174,16 @@ const Enrollment = () => {
             <User className="w-4 h-4 opacity-70 shrink-0" />
             <input
               type="text"
+              name="lastName"
+              value={formData.lastName}
+              onChange={handleInputChange}
               placeholder="Enter your Last name"
               className="bg-transparent w-full focus:outline-none placeholder-white/50"
+              required
             />
           </div>
         </div>
 
-        {/* Email */}
         <div>
           <label className="block font-semibold mb-2">
             Email Address<span className="text-(--accent-color)">*</span>
@@ -94,13 +192,16 @@ const Enrollment = () => {
             <Mail className="w-4 h-4 opacity-70 shrink-0" />
             <input
               type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleInputChange}
               placeholder="Enter your Email Address"
               className="bg-transparent w-full focus:outline-none placeholder-white/50"
+              required
             />
           </div>
         </div>
 
-        {/* Phone */}
         <div>
           <label className="block font-semibold mb-2">
             Phone Number<span className="text-(--accent-color)">*</span>
@@ -109,13 +210,16 @@ const Enrollment = () => {
             <Phone className="w-4 h-4 opacity-70 shrink-0" />
             <input
               type="tel"
+              name="phone"
+              value={formData.phone}
+              onChange={handleInputChange}
               placeholder="Enter your Phone Number"
               className="bg-transparent w-full focus:outline-none placeholder-white/50"
+              required
             />
           </div>
         </div>
 
-        {/* Date of Birth */}
         <div>
           <label className="block font-semibold mb-2">
             Date of Birth<span className="text-(--accent-color)">*</span>
@@ -123,14 +227,16 @@ const Enrollment = () => {
           <div className="flex items-center gap-3 border border-white/40 rounded-full px-5 py-3">
             <Calendar className="w-4 h-4 opacity-70 shrink-0" />
             <input
-              type="text"
-              placeholder="Enter you Date of Birth DD/MM/YY"
+              type="date"
+              name="dob"
+              value={formData.dob}
+              onChange={handleInputChange}
               className="bg-transparent w-full focus:outline-none placeholder-white/50"
+              required
             />
           </div>
         </div>
 
-        {/* Home Address */}
         <div>
           <label className="block font-semibold mb-2">
             Home Address<span className="text-(--accent-color)">*</span>
@@ -139,52 +245,66 @@ const Enrollment = () => {
             <Home className="w-4 h-4 opacity-70 shrink-0" />
             <input
               type="text"
+              name="address"
+              value={formData.address}
+              onChange={handleInputChange}
               placeholder="Enter your full residential address"
               className="bg-transparent w-full focus:outline-none placeholder-white/50"
+              required
             />
           </div>
         </div>
 
-        {/* Gender */}
         <div>
           <label className="block font-semibold mb-3">
             Gender<span className="text-(--accent-color)">*</span>
           </label>
           <div className="space-y-2">
-            {["Male", "Female", "Prefer not to say"].map((option) => (
+            {[
+              { label: "Male", value: "MALE" },
+              { label: "Female", value: "FEMALE" },
+              { label: "Prefer not to say", value: "OTHER" },
+            ].map((option) => (
               <label
-                key={option}
+                key={option.value}
                 className="flex items-center gap-2 text-sm opacity-90 cursor-pointer"
               >
-                <input type="radio" name="gender" value={option} />
-                {option}
+                <input
+                  type="radio"
+                  name="gender"
+                  value={option.value}
+                  checked={formData.gender === option.value}
+                  onChange={handleInputChange}
+                  required
+                />
+                {option.label}
               </label>
             ))}
           </div>
         </div>
 
-        {/* Membership Selection */}
         <div>
           <label className="block font-semibold mb-2">
             Membership Selection<span className="text-(--accent-color)">*</span>
           </label>
           <select
-            value={membership}
+            name="membershipId"
+            value={formData.membershipId}
             onChange={handleMembershipChange}
             className="w-full border border-white/40 rounded-full pl-5 pr-10 py-3 bg-transparent focus:outline-none [&>option]:bg-(--bg-color)"
+            required
           >
             <option value="" disabled>
               Select Membership Plan
             </option>
             {membershipOptions.map((option) => (
-              <option key={option} value={option}>
-                {option}
+              <option key={option.id} value={option.id}>
+                {option.name}
               </option>
             ))}
           </select>
         </div>
 
-        {/* Class Selection - conditional */}
         <div>
           <label className="block font-semibold mb-2">
             Class Selection<span className="text-(--accent-color)">*</span>
@@ -195,48 +315,62 @@ const Enrollment = () => {
             </div>
           ) : (
             <select
-              value={classSelection}
-              onChange={(e) => setClassSelection(e.target.value)}
+              name="classId"
+              value={formData.classId}
+              onChange={handleInputChange}
               disabled={!isBasic}
               className="w-full border border-white/40 rounded-full pl-5 pr-10 py-3 bg-transparent focus:outline-none disabled:opacity-50 [&>option]:bg-(--bg-color)"
+              required={isBasic}
             >
               <option value="" disabled>
                 Class Selection
               </option>
               {classOptions.map((option) => (
-                <option key={option} value={option}>
-                  {option}
+                <option key={option.id} value={option.id}>
+                  {option.title}
                 </option>
               ))}
             </select>
           )}
         </div>
+
+        <div className="md:col-span-2">
+          <div className="flex items-center justify-center gap-2 mt-4 text-sm">
+            <input
+              type="checkbox"
+              checked={agreed}
+              onChange={(e) => setAgreed(e.target.checked)}
+              className="w-4 h-4"
+            />
+            <span>
+              I agree to the{" "}
+              <a href="#" className="text-(--accent-color) font-semibold">
+                Terms
+              </a>{" "}
+              &{" "}
+              <a href="#" className="text-(--accent-color) font-semibold">
+                Conditions.
+              </a>
+            </span>
+          </div>
+
+          {error ? (
+            <p className="mt-4 text-center text-sm text-red-400">{error}</p>
+          ) : null}
+
+          <div className="flex justify-center mt-8">
+            <Button
+              type="submit"
+              variant="accent"
+              size="lg"
+              className="px-16"
+              disabled={loading}
+            >
+              {loading ? "Submitting..." : "Submit"}
+            </Button>
+          </div>
+        </div>
       </form>
-
-      <div className="flex items-center justify-center gap-2 mt-10 text-sm">
-        <input
-          type="checkbox"
-          checked={agreed}
-          onChange={(e) => setAgreed(e.target.checked)}
-          className="w-4 h-4"
-        />
-        <span>
-          I agree to the{" "}
-          <a href="#" className="text-(--accent-color) font-semibold">
-            Terms
-          </a>{" "}
-          &{" "}
-          <a href="#" className="text-(--accent-color) font-semibold">
-            Conditions.
-          </a>
-        </span>
-      </div>
-
-      <div className="flex justify-center mt-8">
-        <Button variant="accent" size="lg" className="px-16">
-          Submit
-        </Button>
-      </div>
     </div>
   );
 };

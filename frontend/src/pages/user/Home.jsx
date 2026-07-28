@@ -316,12 +316,16 @@ const Home = () => {
             white belt's first bow to black belt competition form.
           </p>
           <div className="flex flex-wrap gap-4">
-            <Button variant="primary" size="lg">
-              Enroll A Class
-            </Button>
-            <Button variant="accent" size="lg">
-              Watch a Class <ArrowRight className="w-4 h-4 ml-2" />
-            </Button>
+            <Link to="/enrollment">
+              <Button variant="primary" size="lg">
+                Enroll A Class
+              </Button>
+            </Link>
+            <Link to="/classes">
+              <Button variant="accent" size="lg">
+                Watch a Class <ArrowRight className="w-4 h-4 ml-2" />
+              </Button>
+            </Link>
           </div>
         </div>
         <img
@@ -374,9 +378,11 @@ const Home = () => {
           ))}
         </div>
         <div className="flex justify-center mt-10">
-          <Button variant="accent" size="lg">
-            Enroll A Class <ArrowRight className="w-4 h-4 ml-2" />
-          </Button>
+          <Link to="/enrollment">
+            <Button variant="accent" size="lg">
+              Enroll A Class <ArrowRight className="w-4 h-4 ml-2" />
+            </Button>
+          </Link>
         </div>
       </section>
 
@@ -426,9 +432,11 @@ const Home = () => {
                     <span className="ml-auto">{coach}</span>
                   </div>
                 </div>
-                <Button variant="accent" className="w-full">
-                  Enroll Now
-                </Button>
+                <Link to="/enrollment" className="block">
+                  <Button variant="accent" className="w-full">
+                    Enroll Now
+                  </Button>
+                </Link>
               </div>
             </div>
           ))}
@@ -504,12 +512,14 @@ const Home = () => {
                     </li>
                   ))}
                 </ul>
-                <Button
-                  variant={featured ? "primary" : "accent"}
-                  className="w-full"
-                >
-                  {buttonLabel.toUpperCase()}
-                </Button>
+                <Link to="/enrollment" className="block">
+                  <Button
+                    variant={featured ? "primary" : "accent"}
+                    className="w-full"
+                  >
+                    {buttonLabel.toUpperCase()}
+                  </Button>
+                </Link>
               </div>
             ),
           )}
@@ -693,9 +703,11 @@ const Home = () => {
                   <p className="opacity-90 text-sm mb-4 whitespace-pre-line">
                     {description}
                   </p>
-                  <Button variant={buttonVariant} size="sm">
-                    {button.toUpperCase()}
-                  </Button>
+                  <Link to="/enrollment">
+                    <Button variant={buttonVariant} size="sm">
+                      {button.toUpperCase()}
+                    </Button>
+                  </Link>
                 </div>
                 <img
                   src={image}
