@@ -1,20 +1,40 @@
 import prisma from "../../config/prisma.js";
 import AppError from "../../utils/AppError.js";
 
-export const getPublishedClasses = async () => {
-  const classes = await prisma.class.findMany({
-    where: {
-      isActive: true,
+export const getPublishedClasses = async (page = 1, limit = 10) => {
+  const skip = (page - 1) * limit;
+
+  const [classes, total] = await prisma.$transaction([
+    prisma.class.findMany({
+      where: {
+        isActive: true,
+      },
+      include: {
+        instructor: true,
+        timetables: true,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      skip,
+      take: limit,
+    }),
+    prisma.class.count({
+      where: {
+        isActive: true,
+      },
+    }),
+  ]);
+
+  return {
+    data: classes,
+    pagination: {
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
     },
-    include: {
-      instructor: true,
-      timetables: true,
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
-  return classes;
+  };
 };
 
 export const getClassById = async (id) => {
