@@ -15,12 +15,12 @@ import {
 
 export const getAdminBlogsController = async (req, res, next) => {
   try {
+    const { page, limit, search, isPublished, sortBy, sortOrder } = req.query;
     const safePage = Math.max(Number.parseInt(page, 10) || 1, 1);
     const safeLimit = Math.min(
       Math.max(Number.parseInt(limit, 10) || 10, 1),
       100,
     );
-    const { page, limit, search, isPublished, sortBy, sortOrder } = req.query;
     const safeSortBy = ALLOWED_BLOG_SORT_FIELDS.includes(sortBy)
       ? sortBy
       : "createdAt";

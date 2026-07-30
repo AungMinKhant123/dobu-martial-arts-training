@@ -15,8 +15,8 @@ import { authorize } from "../../middleware/authorize.middleware.js";
 
 const router = express.Router();
 router.get("/", getAdminBlogsController);
-router.get("/:id", getAdminBlogByIdController);
 router.get("/statistics", getAdminBlogStatisticsController);
+router.get("/:id", getAdminBlogByIdController);
 router.post(
   "/",
   authenticate,
