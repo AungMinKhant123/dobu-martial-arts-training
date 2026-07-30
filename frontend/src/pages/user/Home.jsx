@@ -19,6 +19,7 @@ import {
 import { Link } from "react-router";
 import Button from "../../components/Button";
 import { getHomeData } from "../../services/homeService";
+import { getAllInstructors } from "../../services/instructorService";
 
 const dragonDecor = "https://placehold.co/100x100?text=%F0%9F%90%89";
 const fallbackImage = "https://placehold.co/600x600?text=DoBu+Blog";
@@ -273,7 +274,9 @@ const Home = () => {
     blogs: [],
     instructors: [],
   });
+  const [instructors, setInstructors] = useState([]);
   const [loadingHomeData, setLoadingHomeData] = useState(true);
+  const [loadingInstructors, setLoadingInstructors] = useState(true);
 
   useEffect(() => {
     const loadHomeData = async () => {
@@ -295,11 +298,26 @@ const Home = () => {
     loadHomeData();
   }, []);
 
+  useEffect(() => {
+    const loadInstructors = async () => {
+      try {
+        const data = await getAllInstructors();
+        setInstructors(Array.isArray(data) ? data : []);
+      } catch (error) {
+        console.error("Failed to load instructors", error);
+        setInstructors([]);
+      } finally {
+        setLoadingInstructors(false);
+      }
+    };
+
+    loadInstructors();
+  }, []);
+
   const featuredPrograms =
     homeData.classes.length > 0 ? homeData.classes : programs;
   const featuredBlogs = homeData.blogs.length > 0 ? homeData.blogs : [];
-  const featuredInstructors =
-    homeData.instructors.length > 0 ? homeData.instructors : [];
+  const featuredInstructors = instructors;
 
   const getExcerpt = (value) => {
     if (!value)
@@ -575,7 +593,7 @@ const Home = () => {
           dragons
         />
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-3xl mx-auto">
-          {loadingHomeData ? (
+          {loadingHomeData || loadingInstructors ? (
             <p className="col-span-2 text-center opacity-80">
               Loading instructors...
             </p>
