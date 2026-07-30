@@ -5,6 +5,8 @@ import NavBar from "../components/admin/NavBar.jsx";
 import Schedule from "../pages/admin/Schedule.jsx";
 import Blogs from "../pages/admin/Blogs.jsx";
 import BlogAddUpdate from "../pages/admin/BlogAddUpdate.jsx";
+import Instructors from "../pages/admin/Instructors.jsx";
+import InstructorAddUpdate from "../pages/admin/InstructorAddUpdate.jsx";
 
 const AdminLayout = () => {
   return (
@@ -18,6 +20,9 @@ const AdminLayout = () => {
           <Route path="/blogs" element={<Blogs />} />
           <Route path="/blogs/new" element={<BlogAddUpdate />} />
           <Route path="/blogs/:id" element={<BlogAddUpdate />} />
+          <Route path="/instructors" element={<Instructors />} />
+          <Route path="/instructors/new" element={<InstructorAddUpdate />} />
+          <Route path="/instructors/:id" element={<InstructorAddUpdate />} />
         </Routes>
       </main>
     </>
