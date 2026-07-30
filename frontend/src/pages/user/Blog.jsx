@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router";
+import { Link, useSearchParams } from "react-router";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import Button from "../../components/Button";
 import { getAllBlogs } from "../../services/blogService";
@@ -7,8 +7,12 @@ import { getAllBlogs } from "../../services/blogService";
 const fallbackImage = "https://placehold.co/600x600?text=DoBu+Blog";
 
 const Blog = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [posts, setPosts] = useState([]);
-  const [activePage, setActivePage] = useState(1);
+  const [activePage, setActivePage] = useState(() => {
+    const page = Number(searchParams.get("page"));
+    return Number.isFinite(page) && page > 0 ? page : 1;
+  });
   const [pagination, setPagination] = useState({
     page: 1,
     limit: 6,
@@ -17,6 +21,18 @@ const Blog = () => {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    const page = Number(searchParams.get("page")) || 1;
+    if (!Number.isFinite(page) || page < 1) {
+      setSearchParams({ page: "1" }, { replace: true });
+      return;
+    }
+
+    if (page !== activePage) {
+      setActivePage(page);
+    }
+  }, [searchParams, activePage, setSearchParams]);
 
   useEffect(() => {
     const loadBlogs = async () => {
@@ -46,6 +62,12 @@ const Blog = () => {
   }, [activePage]);
 
   const featuredPost = posts[0] || null;
+
+  const handlePageChange = (page) => {
+    const nextPage = Math.max(1, page);
+    setActivePage(nextPage);
+    setSearchParams({ page: String(nextPage) }, { replace: true });
+  };
 
   const formatDate = (dateString) => {
     if (!dateString) return "";
@@ -188,7 +210,7 @@ const Blog = () => {
         {pagination.totalPages > 1 ? (
           <div className="flex items-center justify-center gap-4 mt-12">
             <button
-              onClick={() => setActivePage((page) => Math.max(1, page - 1))}
+              onClick={() => handlePageChange(activePage - 1)}
               className="w-10 h-10 rounded-full border border-white/40 flex items-center justify-center hover:border-amber-400 transition-colors"
               aria-label="Previous"
               disabled={activePage === 1}
@@ -200,7 +222,7 @@ const Blog = () => {
               (page) => (
                 <button
                   key={page}
-                  onClick={() => setActivePage(page)}
+                  onClick={() => handlePageChange(page)}
                   className={`px-4 py-2 rounded-full text-xs font-semibold transition-colors ${
                     activePage === page
                       ? "bg-amber-400 text-gray-900"
@@ -213,11 +235,7 @@ const Blog = () => {
             )}
 
             <button
-              onClick={() =>
-                setActivePage((page) =>
-                  Math.min(pagination.totalPages, page + 1),
-                )
-              }
+              onClick={() => handlePageChange(activePage + 1)}
               className="w-10 h-10 rounded-full border border-white/40 flex items-center justify-center hover:border-amber-400 transition-colors"
               aria-label="Next"
               disabled={activePage === pagination.totalPages}
