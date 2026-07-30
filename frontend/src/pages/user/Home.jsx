@@ -18,9 +18,11 @@ import {
 } from "lucide-react";
 import { Link } from "react-router";
 import Button from "../../components/Button";
+import { getHomeData } from "../../services/homeService";
 import { getAllInstructors } from "../../services/instructorService";
 
 const dragonDecor = "https://placehold.co/100x100?text=%F0%9F%90%89";
+const fallbackImage = "https://placehold.co/600x600?text=DoBu+Blog";
 
 const whyChooseUs = [
   {
@@ -182,21 +184,6 @@ const membershipHighlights = [
   },
 ];
 
-const blogPosts = [
-  {
-    title: "Top 5 Benefits of Martial Arts Training",
-    excerpt:
-      "Discover how martial arts improves confidence, discipline and overall well-being.",
-    image: "https://placehold.co/500x350?text=Blog+1",
-  },
-  {
-    title: "Beginner's Guide to Your First Class",
-    excerpt:
-      "Everything new students should know before attending their first BJJ class.",
-    image: "https://placehold.co/500x350?text=Blog+2",
-  },
-];
-
 const testimonials = Array.from({ length: 6 }).map((_, i) => ({
   id: i,
   name: "Emily Johnson",
@@ -282,14 +269,40 @@ const SectionHeading = ({
 );
 
 const Home = () => {
+  const [homeData, setHomeData] = useState({
+    classes: [],
+    blogs: [],
+    instructors: [],
+  });
   const [instructors, setInstructors] = useState([]);
+  const [loadingHomeData, setLoadingHomeData] = useState(true);
   const [loadingInstructors, setLoadingInstructors] = useState(true);
+
+  useEffect(() => {
+    const loadHomeData = async () => {
+      try {
+        const data = await getHomeData();
+        setHomeData({
+          classes: Array.isArray(data?.classes) ? data.classes : [],
+          blogs: Array.isArray(data?.blogs) ? data.blogs : [],
+          instructors: Array.isArray(data?.instructors) ? data.instructors : [],
+        });
+      } catch (error) {
+        console.error("Failed to load home page data", error);
+        setHomeData({ classes: [], blogs: [], instructors: [] });
+      } finally {
+        setLoadingHomeData(false);
+      }
+    };
+
+    loadHomeData();
+  }, []);
 
   useEffect(() => {
     const loadInstructors = async () => {
       try {
         const data = await getAllInstructors();
-        setInstructors(data);
+        setInstructors(Array.isArray(data) ? data : []);
       } catch (error) {
         console.error("Failed to load instructors", error);
         setInstructors([]);
@@ -300,6 +313,23 @@ const Home = () => {
 
     loadInstructors();
   }, []);
+
+  const featuredPrograms =
+    homeData.classes.length > 0 ? homeData.classes : programs;
+  const featuredBlogs = homeData.blogs.length > 0 ? homeData.blogs : [];
+  const featuredInstructors = instructors;
+
+  const getExcerpt = (value) => {
+    if (!value)
+      return "Read the full article to discover more about our martial arts community.";
+    if (typeof value === "string") {
+      const plainText = value.replace(/<[^>]*>/g, " ").trim();
+      return plainText.length > 160
+        ? `${plainText.slice(0, 157)}...`
+        : plainText;
+    }
+    return "Read the full article to discover more about our martial arts community.";
+  };
 
   return (
     <div className="w-6xl mx-auto px-4">
@@ -397,49 +427,66 @@ const Home = () => {
         />
         {/* Replace heading above manually if wording needs exact "Popular Martial Arts Program" order */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 px-16">
-          {programs.map(({ title, description, difficulty, coach, image }) => (
-            <div
-              key={title}
-              className="border border-amber-400 rounded-lg overflow-hidden pb-6"
-            >
-              <img
-                src={image}
-                alt={title}
-                className="w-full h-56 object-cover"
-              />
-              {/* TODO: swap in real circular dragon badge asset, overlapping image/card boundary */}
-              <div className="flex justify-center -mt-8 mb-2">
+          {featuredPrograms.map((program) => {
+            const title = program.title || program.name;
+            const description =
+              program.description ||
+              program.summary ||
+              "Learn practical martial arts skills in a welcoming environment.";
+            const difficulty =
+              program.level || program.difficulty || "Beginner";
+            const coach =
+              program.instructor?.name || program.coach || "Certified Coach";
+            const image =
+              program.imageUrl ||
+              program.image ||
+              "https://placehold.co/500x300?text=Program";
+
+            return (
+              <div
+                key={program.id || title}
+                className="border border-amber-400 rounded-lg overflow-hidden pb-6"
+              >
                 <img
-                  src="https://placehold.co/60x60/000000/FBBF24?text=D"
-                  alt=""
-                  className="w-16 h-16 rounded-full border-4 border-(--bg-color) object-cover"
+                  src={image}
+                  alt={title}
+                  className="w-full h-56 object-cover"
                 />
-              </div>
-              <div className="text-center px-6">
-                <h4 className="font-['Poppins'] font-bold text-xl uppercase mb-1 inline-block border-b-2 border-amber-400 pb-1">
-                  {title}
-                </h4>
-                <p className="opacity-90 text-sm my-4">{description}</p>
-                <div className="text-left text-sm space-y-2 mb-4">
-                  <div className="flex items-center gap-2">
-                    <Signal className="w-4 h-4 text-amber-400" />
-                    <span>Difficulty</span>
-                    <span className="ml-auto text-amber-400">{difficulty}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <UserCircle className="w-4 h-4 text-amber-400" />
-                    <span>Instructor</span>
-                    <span className="ml-auto">{coach}</span>
-                  </div>
+                <div className="flex justify-center -mt-8 mb-2">
+                  <img
+                    src="https://placehold.co/60x60/000000/FBBF24?text=D"
+                    alt=""
+                    className="w-16 h-16 rounded-full border-4 border-(--bg-color) object-cover"
+                  />
                 </div>
-                <Link to="/enrollment" className="block">
-                  <Button variant="accent" className="w-full">
-                    Enroll Now
-                  </Button>
-                </Link>
+                <div className="text-center px-6">
+                  <h4 className="font-['Poppins'] font-bold text-xl uppercase mb-1 inline-block border-b-2 border-amber-400 pb-1">
+                    {title}
+                  </h4>
+                  <p className="opacity-90 text-sm my-4">{description}</p>
+                  <div className="text-left text-sm space-y-2 mb-4">
+                    <div className="flex items-center gap-2">
+                      <Signal className="w-4 h-4 text-amber-400" />
+                      <span>Difficulty</span>
+                      <span className="ml-auto text-amber-400">
+                        {difficulty}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <UserCircle className="w-4 h-4 text-amber-400" />
+                      <span>Instructor</span>
+                      <span className="ml-auto">{coach}</span>
+                    </div>
+                  </div>
+                  <Link to="/enrollment" className="block">
+                    <Button variant="accent" className="w-full">
+                      Enroll Now
+                    </Button>
+                  </Link>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
         <div className="flex justify-center mt-10">
           <Button variant="accent" size="lg">
@@ -546,16 +593,16 @@ const Home = () => {
           dragons
         />
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-3xl mx-auto">
-          {loadingInstructors ? (
+          {loadingHomeData || loadingInstructors ? (
             <p className="col-span-2 text-center opacity-80">
               Loading instructors...
             </p>
-          ) : instructors.length === 0 ? (
+          ) : featuredInstructors.length === 0 ? (
             <p className="col-span-2 text-center opacity-80">
               Instructor profiles will appear here soon.
             </p>
           ) : (
-            instructors.map((instructor) => {
+            featuredInstructors.map((instructor) => {
               const credentials = [
                 instructor.beltLevel || "Certified Instructor",
                 `${instructor.experienceYears ?? 0} Years Experience`,
@@ -615,31 +662,46 @@ const Home = () => {
           <h2 className="font-['Poppins'] font-bold text-4xl uppercase">
             Latest <span className="text-amber-400">Blog Posts</span>
           </h2>
-          <Button variant="outline">View All</Button>
+          <Link to="/blog">
+            <Button variant="outline">View All</Button>
+          </Link>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          {blogPosts.map(({ title, excerpt, image }) => (
-            <div
-              key={title}
-              className="rounded-lg overflow-hidden border border-(--accent-color)"
-            >
-              <img
-                src={image}
-                alt={title}
-                className="w-full h-56 object-cover"
-              />
-              <div className="p-6">
-                <h4 className="font-['Poppins'] font-bold text-lg mb-2">
-                  {title}
-                </h4>
-                <p className="opacity-90 text-sm mb-4">{excerpt}</p>
-                <a href="#" className="text-amber-400 text-sm font-semibold">
-                  Read More &gt;&gt;&gt;
-                </a>
+        {loadingHomeData ? (
+          <p className="text-center opacity-80">Loading blog posts...</p>
+        ) : featuredBlogs.length === 0 ? (
+          <p className="text-center opacity-80">
+            Blog posts will appear here soon.
+          </p>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {featuredBlogs.map((post) => (
+              <div
+                key={post.id}
+                className="rounded-lg overflow-hidden border border-(--accent-color)"
+              >
+                <img
+                  src={post.imageUrl || fallbackImage}
+                  alt={post.title}
+                  className="w-full h-56 object-cover"
+                />
+                <div className="p-6">
+                  <h4 className="font-['Poppins'] font-bold text-lg mb-2">
+                    {post.title}
+                  </h4>
+                  <p className="opacity-90 text-sm mb-4">
+                    {getExcerpt(post.summary || post.content)}
+                  </p>
+                  <Link
+                    to={`/blog/${post.slug}`}
+                    className="text-amber-400 text-sm font-semibold"
+                  >
+                    Read More &gt;&gt;&gt;
+                  </Link>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </section>
 
       {/* Testimonials */}

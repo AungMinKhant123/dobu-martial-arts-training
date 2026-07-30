@@ -7,6 +7,7 @@ import {
   UserRound,
   Settings,
 } from "lucide-react";
+import logo from "/logo.png";
 const NavBar = () => {
   const navLinks = [
     {
@@ -45,11 +46,7 @@ const NavBar = () => {
     <nav className="w-fit fixed h-screen border-r-2 border-r-amber-50">
       <ul className="flex flex-col gap-5 mt-5">
         <div className="text-center">
-          <img
-            src="http://placehold.co/70"
-            alt="Logo"
-            className="mx-auto mb-3"
-          />
+          <img src={logo} alt="Logo" width={100} className="mx-auto mb-3" />
           <a href="/admin/dashboard" className="text-red-500">
             DoBu Admin
           </a>
