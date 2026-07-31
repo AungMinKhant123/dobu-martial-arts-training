@@ -44,11 +44,12 @@ const Enrollment = () => {
 
         const membershipData = await membershipRes.json();
         const classData = await classRes.json();
+        const classes = classData?.data ?? classData;
 
         setMembershipOptions(
           Array.isArray(membershipData) ? membershipData : [],
         );
-        setClassOptions(Array.isArray(classData) ? classData : []);
+        setClassOptions(Array.isArray(classes) ? classes : []);
       } catch (err) {
         setError(err.message || "Unable to load enrollment options.");
       }
