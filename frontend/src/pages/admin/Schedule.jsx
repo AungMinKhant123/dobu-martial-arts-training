@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { Link } from "react-router";
 import {
   Plus,
   Users,
@@ -177,9 +178,12 @@ const Schedule = () => {
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <h1 className="font-bold text-3xl">Classes & Schedules Management</h1>
-        <button className="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors">
+        <Link
+          to="/admin/dashboard/schedules/new"
+          className="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors"
+        >
           <Plus className="w-4 h-4" /> Add new class
-        </button>
+        </Link>
       </div>
 
       {/* Stats cards */}
@@ -365,9 +369,12 @@ const Schedule = () => {
                     </span>
                   </td>
                   <td className="px-4 py-3">
-                    <button aria-label="Edit">
+                    <Link
+                      to={`/admin/dashboard/schedules/${c.id}`}
+                      aria-label="Edit"
+                    >
                       <PenSquare className="w-4 h-4" />
-                    </button>
+                    </Link>
                   </td>
                   <td className="px-4 py-3">
                     <button aria-label="Delete">
