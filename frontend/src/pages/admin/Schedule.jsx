@@ -13,83 +13,29 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
+import {
+  deleteAdminClass,
+  getAdminClassStatistics,
+  getAdminClasses,
+} from "../../services/adminClassService";
 
-const stats = [
-  { label: "Total Classes", value: 12, bg: "bg-red-500", Icon: Users },
-  { label: "Published", value: 5, bg: "bg-amber-400", Icon: Upload },
-  { label: "Draft", value: 8, bg: "bg-green-500", Icon: PenSquare },
-];
-
-const classes = [
-  {
-    id: 1,
-    name: "Adult Kick boxing",
-    level: "All levels",
-    instructor: "David Lee",
-    schedule: "Thu 7:00PM",
-    capacity: "20/20",
-    status: "Active",
-    published: true,
-  },
-  {
-    id: 2,
-    name: "Adult Kick boxing",
-    level: "All levels",
-    instructor: "David Lee",
-    schedule: "Thu 7:00PM",
-    capacity: "20/20",
-    status: "Inactive",
-    published: false,
-  },
-  {
-    id: 3,
-    name: "Karate Beginners",
-    level: "Beginner",
-    instructor: "Coach Mark",
-    schedule: "Mon 6:00PM",
-    capacity: "15/20",
-    status: "Active",
-    published: true,
-  },
-  {
-    id: 4,
-    name: "Judo Intermediate",
-    level: "Intermediate",
-    instructor: "Sensei Lisa",
-    schedule: "Tue 5:00PM",
-    capacity: "10/15",
-    status: "Active",
-    published: true,
-  },
-  {
-    id: 5,
-    name: "Muay Thai Advanced",
-    level: "Advanced",
-    instructor: "Coach Ryan",
-    schedule: "Wed 8:00PM",
-    capacity: "12/12",
-    status: "Inactive",
-    published: false,
-  },
-  {
-    id: 6,
-    name: "Kids Karate",
-    level: "All levels",
-    instructor: "Coach Mark",
-    schedule: "Sat 10:00AM",
-    capacity: "18/20",
-    status: "Active",
-    published: true,
-  },
-];
+const initialStats = {
+  totalClasses: 0,
+  publishedClasses: 0,
+  unpublishedClasses: 0,
+};
 
 const Schedule = () => {
+  const [classes, setClasses] = useState([]);
+  const [stats, setStats] = useState(initialStats);
   const [currentPage, setCurrentPage] = useState(1);
   const [activeFilters, setActiveFilters] = useState([]);
   const [filterOpen, setFilterOpen] = useState(false);
   const [sortOpen, setSortOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const filterRef = useRef(null);
   const sortRef = useRef(null);
@@ -97,16 +43,15 @@ const Schedule = () => {
   const itemsPerPage = 5;
 
   const filterOptions = [
-    "All Levels",
-    "Beginner",
-    "Intermediate",
-    "Standard",
-    "Active",
-    "Inactive",
+    "BEGINNER",
+    "INTERMEDIATE",
+    "ADVANCED",
+    "ACTIVE",
+    "INACTIVE",
   ];
 
   const sortOptions = [
-    { label: "Class Name (A–Z)", key: "name" },
+    { label: "Class Name (A–Z)", key: "title" },
     { label: "Instructor (A–Z)", key: "instructor" },
   ];
 
@@ -122,25 +67,63 @@ const Schedule = () => {
     );
   };
 
-  const filteredClasses = classes
-    .filter((c) =>
-      activeFilters.every(
-        (filter) =>
-          filter.toLowerCase() === c.level.toLowerCase() ||
-          filter.toLowerCase() === c.status.toLowerCase(),
-      ),
-    )
-    .filter((c) => {
-      const query = searchQuery.toLowerCase().trim();
-      if (!query) return true;
-      return (
-        c.name.toLowerCase().includes(query) ||
-        c.instructor.toLowerCase().includes(query)
-      );
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        setLoading(true);
+        setError("");
+        const [statsResponse, classesResponse] = await Promise.all([
+          getAdminClassStatistics(),
+          getAdminClasses({ page: 1, limit: 100 }),
+        ]);
+        setStats({
+          totalClasses: statsResponse.totalClasses ?? 0,
+          publishedClasses: statsResponse.publishedClasses ?? 0,
+          unpublishedClasses: statsResponse.unpublishedClasses ?? 0,
+        });
+        const apiClasses = Array.isArray(classesResponse?.data)
+          ? classesResponse.data
+          : [];
+        setClasses(apiClasses);
+      } catch (err) {
+        console.error("Failed to load admin classes", err);
+        setError(err.message || "Unable to load classes.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadData();
+  }, []);
+
+  const filteredClasses = classes.filter((c) => {
+    const matchesFilters = activeFilters.every((filter) => {
+      const normalizedFilter = filter.toLowerCase();
+      const level = c.level?.toLowerCase();
+      const status = c.isActive ? "active" : "inactive";
+      return level === normalizedFilter || status === normalizedFilter;
     });
 
+    if (!matchesFilters) return false;
+
+    const query = searchQuery.toLowerCase().trim();
+    if (!query) return true;
+
+    return (
+      c.title?.toLowerCase().includes(query) ||
+      c.instructor?.name?.toLowerCase().includes(query)
+    );
+  });
+
   const sortedClasses = sortBy
-    ? [...filteredClasses].sort((a, b) => a[sortBy].localeCompare(b[sortBy]))
+    ? [...filteredClasses].sort((a, b) => {
+        if (sortBy === "title") {
+          return (a.title || "").localeCompare(b.title || "");
+        }
+        return (a.instructor?.name || "").localeCompare(
+          b.instructor?.name || "",
+        );
+      })
     : filteredClasses;
 
   const totalPages = Math.max(
@@ -170,6 +153,20 @@ const Schedule = () => {
     setCurrentPage(1);
   }, [activeFilters, searchQuery, sortBy]);
 
+  const handleDelete = async (id) => {
+    if (!window.confirm("Delete this class?")) return;
+    try {
+      setLoading(true);
+      await deleteAdminClass(id);
+      setClasses((prev) => prev.filter((c) => c.id !== id));
+    } catch (err) {
+      console.error("Unable to delete class", err);
+      setError(err.message || "Failed to delete class.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div>
       {/* Breadcrumb */}
@@ -188,7 +185,26 @@ const Schedule = () => {
 
       {/* Stats cards */}
       <div className="flex flex-wrap justify-center gap-6 mb-10">
-        {stats.map(({ label, value, bg, Icon }) => (
+        {[
+          {
+            label: "Total Classes",
+            value: stats.totalClasses,
+            bg: "bg-red-500",
+            Icon: Users,
+          },
+          {
+            label: "Published",
+            value: stats.publishedClasses,
+            bg: "bg-amber-400",
+            Icon: Upload,
+          },
+          {
+            label: "Draft",
+            value: stats.unpublishedClasses,
+            bg: "bg-green-500",
+            Icon: PenSquare,
+          },
+        ].map(({ label, value, bg, Icon }) => (
           <div
             key={label}
             className="border border-gray-300 rounded-xl px-8 py-6 flex items-center gap-4"
@@ -208,7 +224,7 @@ const Schedule = () => {
 
       {/* Search / Filter / Sort */}
       <div className="flex flex-wrap items-center gap-3 mb-4">
-        <div className="flex items-center gap-2 border border-gray-300 rounded-full px-4 py-2 flex-1 min-w-[240px]">
+        <div className="flex items-center gap-2 border border-gray-300 rounded-full px-4 py-2 flex-1 min-w-60">
           <Search className="w-4 h-4 opacity-60" />
           <input
             type="text"
@@ -310,82 +326,97 @@ const Schedule = () => {
 
       {/* Table */}
       <div className="border border-gray-300 rounded-xl overflow-hidden mb-8">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b border-gray-300 text-left">
-              <th className="px-4 py-3 font-semibold">Class</th>
-              <th className="px-4 py-3 font-semibold">Level</th>
-              <th className="px-4 py-3 font-semibold">Instructor</th>
-              <th className="px-4 py-3 font-semibold">Schedule</th>
-              <th className="px-4 py-3 font-semibold">Capacity</th>
-              <th className="px-4 py-3 font-semibold">Status</th>
-              <th className="px-4 py-3 font-semibold">Publish</th>
-              <th className="px-4 py-3 font-semibold">Edit</th>
-              <th className="px-4 py-3 font-semibold">Delete</th>
-            </tr>
-          </thead>
-          <tbody>
-            {paginatedClasses.length === 0 ? (
-              <tr>
-                <td colSpan={9} className="px-4 py-8 text-center opacity-70">
-                  No classes found.
-                </td>
+        {error ? (
+          <div className="px-4 py-6 text-sm text-red-500">{error}</div>
+        ) : (
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-gray-300 text-left">
+                <th className="px-4 py-3 font-semibold">Class</th>
+                <th className="px-4 py-3 font-semibold">Level</th>
+                <th className="px-4 py-3 font-semibold">Instructor</th>
+                <th className="px-4 py-3 font-semibold">Duration</th>
+                <th className="px-4 py-3 font-semibold">Capacity</th>
+                <th className="px-4 py-3 font-semibold">Status</th>
+                <th className="px-4 py-3 font-semibold">Publish</th>
+                <th className="px-4 py-3 font-semibold">Edit</th>
+                <th className="px-4 py-3 font-semibold">Delete</th>
               </tr>
-            ) : (
-              paginatedClasses.map((c, index) => (
-                <tr
-                  key={c.id}
-                  className={
-                    index !== paginatedClasses.length - 1
-                      ? "border-b border-gray-200"
-                      : ""
-                  }
-                >
-                  <td className="px-4 py-3 font-medium">{c.name}</td>
-                  <td className="px-4 py-3">{c.level}</td>
-                  <td className="px-4 py-3">{c.instructor}</td>
-                  <td className="px-4 py-3">{c.schedule}</td>
-                  <td className="px-4 py-3">{c.capacity}</td>
-                  <td className="px-4 py-3">
-                    <span
-                      className={
-                        c.status === "Active"
-                          ? "text-green-600 font-semibold"
-                          : "text-red-500 font-semibold"
-                      }
-                    >
-                      {c.status}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3">
-                    <span
-                      className={
-                        c.published
-                          ? "text-green-600 font-semibold"
-                          : "text-red-500 font-semibold"
-                      }
-                    >
-                      {c.published ? "Yes" : "No"}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3">
-                    <Link
-                      to={`/admin/dashboard/schedules/${c.id}`}
-                      aria-label="Edit"
-                    >
-                      <PenSquare className="w-4 h-4" />
-                    </Link>
-                  </td>
-                  <td className="px-4 py-3">
-                    <button aria-label="Delete">
-                      <Trash2 className="w-4 h-4 text-red-500" />
-                    </button>
+            </thead>
+            <tbody>
+              {loading ? (
+                <tr>
+                  <td colSpan={9} className="px-4 py-8 text-center opacity-70">
+                    Loading classes...
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              ) : paginatedClasses.length === 0 ? (
+                <tr>
+                  <td colSpan={9} className="px-4 py-8 text-center opacity-70">
+                    No classes found.
+                  </td>
+                </tr>
+              ) : (
+                paginatedClasses.map((c, index) => (
+                  <tr
+                    key={c.id}
+                    className={
+                      index !== paginatedClasses.length - 1
+                        ? "border-b border-gray-200"
+                        : ""
+                    }
+                  >
+                    <td className="px-4 py-3 font-medium">{c.title}</td>
+                    <td className="px-4 py-3">{c.level}</td>
+                    <td className="px-4 py-3">{c.instructor?.name || "-"}</td>
+                    <td className="px-4 py-3">
+                      {c.duration ? `${c.duration} min` : "-"}
+                    </td>
+                    <td className="px-4 py-3">{c.capacity}</td>
+                    <td className="px-4 py-3">
+                      <span
+                        className={
+                          c.isActive
+                            ? "text-green-600 font-semibold"
+                            : "text-red-500 font-semibold"
+                        }
+                      >
+                        {c.isActive ? "Active" : "Inactive"}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3">
+                      <span
+                        className={
+                          c.isPublished
+                            ? "text-green-600 font-semibold"
+                            : "text-red-500 font-semibold"
+                        }
+                      >
+                        {c.isPublished ? "Yes" : "No"}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3">
+                      <Link
+                        to={`/admin/dashboard/schedules/${c.id}`}
+                        aria-label="Edit"
+                      >
+                        <PenSquare className="w-4 h-4" />
+                      </Link>
+                    </td>
+                    <td className="px-4 py-3">
+                      <button
+                        aria-label="Delete"
+                        onClick={() => handleDelete(c.id)}
+                      >
+                        <Trash2 className="w-4 h-4 text-red-500" />
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        )}
       </div>
 
       {/* Pagination */}

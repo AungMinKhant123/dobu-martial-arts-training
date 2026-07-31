@@ -8,6 +8,8 @@ import Blogs from "../pages/admin/Blogs.jsx";
 import BlogAddUpdate from "../pages/admin/BlogAddUpdate.jsx";
 import Instructors from "../pages/admin/Instructors.jsx";
 import InstructorAddUpdate from "../pages/admin/InstructorAddUpdate.jsx";
+import Enquiries from "../pages/admin/Enquiries.jsx";
+import EnquiryDetail from "../pages/admin/EnquiryDetail.jsx";
 
 const AdminLayout = () => {
   return (
@@ -26,6 +28,8 @@ const AdminLayout = () => {
           <Route path="/instructors" element={<Instructors />} />
           <Route path="/instructors/new" element={<InstructorAddUpdate />} />
           <Route path="/instructors/:id" element={<InstructorAddUpdate />} />
+          <Route path="/enquiries" element={<Enquiries />} />
+          <Route path="/enquiries/:id" element={<EnquiryDetail />} />
         </Routes>
       </main>
     </>

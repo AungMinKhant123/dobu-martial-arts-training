@@ -1,55 +1,37 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router";
 import { Upload } from "lucide-react";
-
-// Same hardcoded data as Schedule.jsx — mirrors it for now until connected to classService.js
-const classes = [
-  {
-    id: "1",
-    name: "Adult Kick boxing",
-    description: "",
-    martialArt: "Muay Thai",
-    level: "All levels",
-    instructor: "David Lee",
-    minAge: "",
-    capacity: "20",
-    schedule: "Thu 7:00PM",
-    beltRequirement: "",
-  },
-  {
-    id: "2",
-    name: "Adult Kick boxing",
-    description: "",
-    martialArt: "Muay Thai",
-    level: "All levels",
-    instructor: "David Lee",
-    minAge: "",
-    capacity: "20",
-    schedule: "Thu 7:00PM",
-    beltRequirement: "",
-  },
-];
+import {
+  createAdminClass,
+  deleteAdminClass,
+  getAdminClassById,
+  updateAdminClass,
+} from "../../services/adminClassService";
+import { getAdminInstructors } from "../../services/adminInstructorService";
 
 const martialArts = [
-  "Karate",
-  "Muay Thai",
-  "Judo",
-  "Jiu-Jitsu",
-  "Self Defense",
+  "KARATE",
+  "MUAY_THAI",
+  "JUDO",
+  "JIU_JITSU",
+  "TAEKWONDO",
+  "AIKIDO",
+  "KUNG_FU",
 ];
-const levels = ["All levels", "Beginner", "Intermediate", "Advanced"];
-const instructors = ["David Lee", "Coach Mark", "Sensei Lisa", "Coach Ryan"];
+const levels = ["BEGINNER", "INTERMEDIATE", "ADVANCED"];
 
 const emptyForm = {
-  name: "",
+  title: "",
   description: "",
   martialArt: "",
   level: "",
-  instructor: "",
+  instructorId: "",
   minAge: "",
+  duration: "",
+  overview: "",
   capacity: "",
-  schedule: "",
   beltRequirement: "",
+  isActive: true,
 };
 
 const ScheduleAddUpdate = () => {
@@ -57,25 +39,114 @@ const ScheduleAddUpdate = () => {
   const navigate = useNavigate();
   const isEditing = Boolean(id);
 
-  const existingClass = isEditing ? classes.find((c) => c.id === id) : null;
+  const [formData, setFormData] = useState(emptyForm);
+  const [instructors, setInstructors] = useState([]);
+  const [imageFile, setImageFile] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const [formData, setFormData] = useState(existingClass || emptyForm);
+  useEffect(() => {
+    const loadInstructors = async () => {
+      try {
+        const response = await getAdminInstructors({ limit: 100 });
+        setInstructors(Array.isArray(response?.data) ? response.data : []);
+      } catch (err) {
+        console.error("Failed to load instructors", err);
+      }
+    };
+
+    loadInstructors();
+  }, []);
+
+  useEffect(() => {
+    if (!isEditing) return;
+
+    const loadClass = async () => {
+      try {
+        setLoading(true);
+        setError("");
+        const classData = await getAdminClassById(id);
+        setFormData({
+          title: classData.title || "",
+          description: classData.description || "",
+          martialArt: classData.martialArt || "",
+          level: classData.level || "",
+          instructorId: classData.instructorId || "",
+          minAge: classData.minAge ?? "",
+          duration: classData.duration ?? "",
+          overview: classData.overview || "",
+          capacity: classData.capacity ?? "",
+          beltRequirement: classData.beltRequirement || "",
+          isActive: classData.isActive ?? true,
+        });
+      } catch (err) {
+        console.error("Failed to load class", err);
+        setError(err.message || "Unable to load class details.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadClass();
+  }, [id, isEditing]);
 
   const handleChange = (field) => (e) => {
-    setFormData((prev) => ({ ...prev, [field]: e.target.value }));
+    const value =
+      e.target.type === "checkbox" ? e.target.checked : e.target.value;
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleSave = (e) => {
+  const handleFileChange = (event) => {
+    const file = event.target.files?.[0] || null;
+    setImageFile(file);
+  };
+
+  const handleSave = async (e) => {
     e.preventDefault();
-    // TODO: connect to classService.js to actually persist this
-    console.log("Saving class:", formData);
-    navigate("/admin/dashboard/schedules");
+    try {
+      setLoading(true);
+      setError("");
+
+      if (!isEditing && !imageFile) {
+        setError("Please select an image for the class.");
+        return;
+      }
+
+      const payload = {
+        ...formData,
+        minAge: Number(formData.minAge),
+        duration: Number(formData.duration),
+        capacity: Number(formData.capacity),
+        imageFile: imageFile || undefined,
+      };
+
+      if (isEditing) {
+        await updateAdminClass(id, payload);
+      } else {
+        await createAdminClass(payload);
+      }
+
+      navigate("/admin/dashboard/schedules");
+    } catch (err) {
+      console.error("Failed to save class", err);
+      setError(err.message || "Unable to save class.");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleDelete = () => {
-    // TODO: connect to classService.js to actually delete this
-    console.log("Deleting class:", id);
-    navigate("/admin/dashboard/schedules");
+  const handleDelete = async () => {
+    if (!id || !window.confirm("Delete this class?")) return;
+    try {
+      setLoading(true);
+      await deleteAdminClass(id);
+      navigate("/admin/dashboard/schedules");
+    } catch (err) {
+      console.error("Failed to delete class", err);
+      setError(err.message || "Unable to delete class.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -94,18 +165,32 @@ const ScheduleAddUpdate = () => {
         className="max-w-2xl border border-gray-300 rounded-2xl p-8"
       >
         <h2 className="font-bold text-2xl mb-8">
-          {isEditing ? `Edit class — ${formData.name}` : "Add New Class"}
+          {isEditing ? `Edit class — ${formData.title}` : "Add New Class"}
         </h2>
+
+        {error && <p className="mb-4 text-sm text-red-500">{error}</p>}
 
         {/* Upload Photo */}
         <div className="flex items-center gap-6 mb-6">
           <label className="font-semibold w-40 shrink-0">Upload Photo</label>
-          <button
-            type="button"
-            className="w-16 h-16 border-2 border-dashed border-gray-400 rounded-lg flex items-center justify-center hover:border-amber-400 transition-colors"
-          >
-            <Upload className="w-5 h-5" />
-          </button>
+          <div className="flex flex-col gap-2">
+            <label className="w-16 h-16 border-2 border-dashed border-gray-400 rounded-lg flex items-center justify-center hover:border-amber-400 transition-colors cursor-pointer">
+              <Upload className="w-5 h-5" />
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleFileChange}
+              />
+            </label>
+            {imageFile ? (
+              <span className="text-xs opacity-70">{imageFile.name}</span>
+            ) : (
+              <span className="text-xs opacity-70">
+                Required for new classes
+              </span>
+            )}
+          </div>
         </div>
 
         {/* Class Name */}
@@ -113,8 +198,8 @@ const ScheduleAddUpdate = () => {
           <label className="font-semibold w-40 shrink-0">Class Name</label>
           <input
             type="text"
-            value={formData.name}
-            onChange={handleChange("name")}
+            value={formData.title}
+            onChange={handleChange("title")}
             className="flex-1 border border-gray-300 rounded-lg px-4 py-2 bg-transparent focus:outline-none"
           />
         </div>
@@ -172,16 +257,16 @@ const ScheduleAddUpdate = () => {
         <div className="flex items-center gap-6 mb-6">
           <label className="font-semibold w-40 shrink-0">Instructor</label>
           <select
-            value={formData.instructor}
-            onChange={handleChange("instructor")}
+            value={formData.instructorId}
+            onChange={handleChange("instructorId")}
             className="flex-1 border border-gray-300 rounded-lg px-4 py-2 bg-transparent focus:outline-none [&>option]:bg-(--bg-color)"
           >
             <option value="" disabled>
               Select Instructor
             </option>
             {instructors.map((instructor) => (
-              <option key={instructor} value={instructor}>
-                {instructor.toUpperCase()}
+              <option key={instructor.id} value={instructor.id}>
+                {instructor.name}
               </option>
             ))}
           </select>
@@ -209,14 +294,24 @@ const ScheduleAddUpdate = () => {
           />
         </div>
 
-        {/* Schedule */}
+        {/* Duration */}
         <div className="flex items-center gap-6 mb-6">
-          <label className="font-semibold w-40 shrink-0">Schedule</label>
+          <label className="font-semibold w-40 shrink-0">Duration (min)</label>
           <input
-            type="text"
-            value={formData.schedule}
-            onChange={handleChange("schedule")}
+            type="number"
+            value={formData.duration}
+            onChange={handleChange("duration")}
             className="flex-1 border border-gray-300 rounded-lg px-4 py-2 bg-transparent focus:outline-none"
+          />
+        </div>
+
+        {/* Overview */}
+        <div className="flex items-center gap-6 mb-6">
+          <label className="font-semibold w-40 shrink-0">Overview</label>
+          <textarea
+            value={formData.overview}
+            onChange={handleChange("overview")}
+            className="flex-1 border border-gray-300 rounded-lg px-4 py-2 bg-transparent focus:outline-none min-h-24"
           />
         </div>
 
@@ -234,18 +329,28 @@ const ScheduleAddUpdate = () => {
         </div>
 
         {/* Actions */}
-        <div className="flex gap-4">
+        <div className="flex items-center gap-4">
+          <label className="flex items-center gap-2 text-sm font-medium">
+            <input
+              type="checkbox"
+              checked={formData.isActive}
+              onChange={handleChange("isActive")}
+            />
+            Active
+          </label>
           <button
             type="submit"
-            className="bg-red-500 hover:bg-red-600 text-white font-semibold px-6 py-2 rounded-lg transition-colors"
+            disabled={loading}
+            className="bg-red-500 hover:bg-red-600 text-white font-semibold px-6 py-2 rounded-lg transition-colors disabled:opacity-60"
           >
-            Save Changes
+            {loading ? "Saving..." : "Save Changes"}
           </button>
           {isEditing && (
             <button
               type="button"
               onClick={handleDelete}
-              className="border border-red-500 text-red-500 font-semibold px-6 py-2 rounded-lg hover:bg-red-500 hover:text-white transition-colors"
+              disabled={loading}
+              className="border border-red-500 text-red-500 font-semibold px-6 py-2 rounded-lg hover:bg-red-500 hover:text-white transition-colors disabled:opacity-60"
             >
               Delete
             </button>
