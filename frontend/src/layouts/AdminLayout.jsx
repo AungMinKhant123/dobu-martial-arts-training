@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router";
+import { Routes, Route, Navigate } from "react-router";
 import Dashbord from "../pages/admin/Dashbord.jsx";
 import Courses from "../pages/admin/Courses.jsx";
 import NavBar from "../components/admin/NavBar.jsx";
@@ -7,8 +7,13 @@ import Blogs from "../pages/admin/Blogs.jsx";
 import BlogAddUpdate from "../pages/admin/BlogAddUpdate.jsx";
 import Instructors from "../pages/admin/Instructors.jsx";
 import InstructorAddUpdate from "../pages/admin/InstructorAddUpdate.jsx";
+import { isAuthenticated } from "../services/authService.js";
 
 const AdminLayout = () => {
+  if (!isAuthenticated()) {
+    return <Navigate to="/admin/login" replace />;
+  }
+
   return (
     <>
       <NavBar />

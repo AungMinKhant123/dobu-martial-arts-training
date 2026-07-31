@@ -1,8 +1,3 @@
-const getAuthHeaders = () => {
-  const accessToken = localStorage.getItem("accessToken");
-  return accessToken ? { Authorization: `Bearer ${accessToken}` } : {};
-};
-
 const handleResponse = async (response) => {
   const payload = await response.json().catch(() => null);
   if (!response.ok) {
@@ -30,27 +25,21 @@ export const getAdminBlogs = async ({
   if (isPublished !== undefined) query.set("isPublished", String(isPublished));
 
   const response = await fetch(`/api/admin/blogs?${query.toString()}`, {
-    headers: {
-      ...getAuthHeaders(),
-    },
+    credentials: "include",
   });
   return await handleResponse(response);
 };
 
 export const getAdminBlogStatistics = async () => {
   const response = await fetch(`/api/admin/blogs/statistics`, {
-    headers: {
-      ...getAuthHeaders(),
-    },
+    credentials: "include",
   });
   return await handleResponse(response);
 };
 
 export const getAdminBlogById = async (id) => {
   const response = await fetch(`/api/admin/blogs/${id}`, {
-    headers: {
-      ...getAuthHeaders(),
-    },
+    credentials: "include",
   });
   return await handleResponse(response);
 };
@@ -73,9 +62,7 @@ export const createAdminBlog = async ({
 
   const response = await fetch(`/api/admin/blogs`, {
     method: "POST",
-    headers: {
-      ...getAuthHeaders(),
-    },
+    credentials: "include",
     body: formData,
   });
   const payload = await handleResponse(response);
@@ -98,9 +85,7 @@ export const updateAdminBlog = async (
 
   const response = await fetch(`/api/admin/blogs/${id}`, {
     method: "PATCH",
-    headers: {
-      ...getAuthHeaders(),
-    },
+    credentials: "include",
     body: formData,
   });
   const payload = await handleResponse(response);
@@ -110,8 +95,8 @@ export const updateAdminBlog = async (
 export const deleteAdminBlog = async (id) => {
   const response = await fetch(`/api/admin/blogs/${id}`, {
     method: "DELETE",
+    credentials: "include",
     headers: {
-      ...getAuthHeaders(),
       "Content-Type": "application/json",
     },
   });
@@ -121,8 +106,8 @@ export const deleteAdminBlog = async (id) => {
 export const publishAdminBlog = async (id) => {
   const response = await fetch(`/api/admin/blogs/${id}/publish`, {
     method: "PATCH",
+    credentials: "include",
     headers: {
-      ...getAuthHeaders(),
       "Content-Type": "application/json",
     },
   });
@@ -133,8 +118,8 @@ export const publishAdminBlog = async (id) => {
 export const unpublishAdminBlog = async (id) => {
   const response = await fetch(`/api/admin/blogs/${id}/unpublish`, {
     method: "PATCH",
+    credentials: "include",
     headers: {
-      ...getAuthHeaders(),
       "Content-Type": "application/json",
     },
   });
