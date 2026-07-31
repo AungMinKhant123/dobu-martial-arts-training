@@ -23,7 +23,7 @@ const NavBar = () => {
     },
     {
       Icon: Mail,
-      path: "/admin/dashboard/enquires",
+      path: "/admin/dashboard/enquiries",
       name: "Enquire Inbox",
     },
     {
