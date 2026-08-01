@@ -34,7 +34,7 @@ const Header = () => {
               <img src={logo} width={100} alt="DoBu Martial Arts Logo" />
             </NavLink>
           </div>
-          <ul className="flex gap-5">
+          <ul className="flex gap-15">
             {navLinks.map((link) => (
               <li key={link.path}>
                 <NavLink

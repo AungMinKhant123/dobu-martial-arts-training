@@ -2,7 +2,8 @@ export const getAllClasses = async () => {
   const res = await fetch("/api/classes");
   if (!res.ok) throw new Error("Failed to fetch classes");
   const data = await res.json();
-  return Array.isArray(data) ? data : data.classes || [];
+  const classes = data?.data ?? data;
+  return Array.isArray(classes) ? classes : [];
 };
 
 export const getClassById = async (id) => {

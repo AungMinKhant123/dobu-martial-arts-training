@@ -80,12 +80,12 @@ const ContactForm = () => {
   };
 
   return (
-    <div className="w-3xl px-0 py-8 mx-auto">
-      <h1 className="mb-12 text-[70px] font-bold tracking-tight text-yellow-400">
+    <div className="w-xl px-0 py-8 mx-auto">
+      <h1 className="mb-12 text-[50px] font-bold tracking-tight text-center text-yellow-400">
         Get in Touch
       </h1>
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-12">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-3">
         <input
           type="text"
           name="name"
