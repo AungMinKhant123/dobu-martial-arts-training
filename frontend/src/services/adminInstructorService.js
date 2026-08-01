@@ -1,8 +1,3 @@
-const getAuthHeaders = () => {
-  const accessToken = localStorage.getItem("accessToken");
-  return accessToken ? { Authorization: `Bearer ${accessToken}` } : {};
-};
-
 const handleResponse = async (response) => {
   const payload = await response.json().catch(() => null);
   if (!response.ok) {
@@ -31,18 +26,14 @@ export const getAdminInstructors = async ({
   if (beltLevel) query.set("beltLevel", beltLevel);
 
   const response = await fetch(`/api/admin/instructors?${query.toString()}`, {
-    headers: {
-      ...getAuthHeaders(),
-    },
+    credentials: "include",
   });
   return await handleResponse(response);
 };
 
 export const getAdminInstructorById = async (id) => {
   const response = await fetch(`/api/admin/instructors/${id}`, {
-    headers: {
-      ...getAuthHeaders(),
-    },
+    credentials: "include",
   });
   const payload = await handleResponse(response);
   return payload.data || payload;
@@ -96,9 +87,7 @@ export const createAdminInstructor = async ({
 }) => {
   const response = await fetch(`/api/admin/instructors`, {
     method: "POST",
-    headers: {
-      ...getAuthHeaders(),
-    },
+    credentials: "include",
     body: buildInstructorFormData({
       name,
       email,
@@ -135,9 +124,7 @@ export const updateAdminInstructor = async (
 ) => {
   const response = await fetch(`/api/admin/instructors/${id}`, {
     method: "PATCH",
-    headers: {
-      ...getAuthHeaders(),
-    },
+    credentials: "include",
     body: buildInstructorFormData({
       name,
       email,
@@ -159,8 +146,8 @@ export const updateAdminInstructor = async (
 export const deleteAdminInstructor = async (id) => {
   const response = await fetch(`/api/admin/instructors/${id}`, {
     method: "DELETE",
+    credentials: "include",
     headers: {
-      ...getAuthHeaders(),
       "Content-Type": "application/json",
     },
   });
