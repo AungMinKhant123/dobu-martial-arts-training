@@ -3,6 +3,7 @@ import {
   ALLOWED_CLASS_SORT_FIELDS,
   ALLOWED_CLASS_SORT_ORDERS,
 } from "../../constants/class.constants.js";
+import AppError from "../../utils/AppError.js";
 import {
   createAdminClassService,
   deleteAdminClassService,
@@ -13,6 +14,10 @@ import {
   unpublishAdminClassService,
   updateAdminClassService,
 } from "./admin.class.service.js";
+
+const MARTIAL_ARTS = Object.values(MartialArt);
+const CLASS_LEVELS = Object.values(ClassLevel);
+
 export const getAdminClassesController = async (req, res, next) => {
   try {
     const {
@@ -250,4 +255,3 @@ export const unpublishAdminClassController = async (req, res, next) => {
     next(error);
   }
 };
-

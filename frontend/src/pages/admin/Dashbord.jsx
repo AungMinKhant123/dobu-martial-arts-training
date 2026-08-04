@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import { getAdminDashboard } from "../../services/adminDashboardService";
 
 const statusStyles = {
-  RESOLVED: "text-green-600 font-semibold",
-  NEW: "text-gray-900 font-semibold",
   PENDING: "text-amber-500 font-semibold",
+  READ: "text-sky-600 font-semibold",
+  REPLIED: "text-green-600 font-semibold",
 };
 
 const today = new Date().toLocaleDateString("en-US", {
@@ -42,20 +42,18 @@ const Dashbord = () => {
           },
         ];
 
-        const enquiries = (
-          data?.statistics?.recentPendingEnrollments ?? []
-        ).map((enquiry) => ({
-          name: enquiry?.email || "Unknown",
-          reason:
-            enquiry?.membership?.name && enquiry?.class?.title
-              ? `${enquiry.membership.name} • ${enquiry.class.title}`
-              : enquiry?.membership?.name || enquiry?.class?.title || "N/A",
-          date: new Date(enquiry?.createdAt).toLocaleDateString("en-GB", {
-            day: "numeric",
-            month: "short",
+        const enquiries = (data?.statistics?.recentEnquiries ?? []).map(
+          (enquiry) => ({
+            id: enquiry?.id,
+            name: enquiry?.name || enquiry?.email || "Unknown",
+            reason: enquiry?.subject || "No subject provided",
+            date: new Date(enquiry?.createdAt).toLocaleDateString("en-GB", {
+              day: "numeric",
+              month: "short",
+            }),
+            status: String(enquiry?.status || "PENDING").toUpperCase(),
           }),
-          status: "Pending",
-        }));
+        );
 
         setStats(dashboardStats);
         setRecentEnquiries(enquiries);
@@ -112,11 +110,13 @@ const Dashbord = () => {
               <tbody>
                 {recentEnquiries.length > 0 ? (
                   recentEnquiries.map((enquiry) => (
-                    <tr key={`${enquiry.name}-${enquiry.date}`}>
+                    <tr key={enquiry.id || `${enquiry.name}-${enquiry.date}`}>
                       <td className="py-2 font-medium">{enquiry.name}</td>
                       <td className="py-2">{enquiry.reason}</td>
                       <td className="py-2">{enquiry.date}</td>
-                      <td className={`py-2 ${statusStyles.PENDING}`}>
+                      <td
+                        className={`py-2 ${statusStyles[enquiry.status] || statusStyles.PENDING}`}
+                      >
                         {enquiry.status}
                       </td>
                     </tr>
@@ -124,7 +124,7 @@ const Dashbord = () => {
                 ) : (
                   <tr>
                     <td colSpan="4" className="py-4 text-center text-gray-500">
-                      No pending enquiries found.
+                      No recent enquiries found.
                     </td>
                   </tr>
                 )}

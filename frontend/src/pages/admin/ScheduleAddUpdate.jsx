@@ -5,6 +5,8 @@ import {
   createAdminClass,
   deleteAdminClass,
   getAdminClassById,
+  publishAdminClass,
+  unpublishAdminClass,
   updateAdminClass,
 } from "../../services/adminClassService";
 import { getAdminInstructors } from "../../services/adminInstructorService";
@@ -32,6 +34,7 @@ const emptyForm = {
   capacity: "",
   beltRequirement: "",
   isActive: true,
+  isPublished: false,
 };
 
 const ScheduleAddUpdate = () => {
@@ -40,8 +43,11 @@ const ScheduleAddUpdate = () => {
   const isEditing = Boolean(id);
 
   const [formData, setFormData] = useState(emptyForm);
+  const [initialPublishedState, setInitialPublishedState] = useState(false);
   const [instructors, setInstructors] = useState([]);
   const [imageFile, setImageFile] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState("");
+  const [previewObjectUrl, setPreviewObjectUrl] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -78,7 +84,15 @@ const ScheduleAddUpdate = () => {
           capacity: classData.capacity ?? "",
           beltRequirement: classData.beltRequirement || "",
           isActive: classData.isActive ?? true,
+          isPublished: Boolean(classData.isPublished),
         });
+        setInitialPublishedState(Boolean(classData.isPublished));
+        if (classData.imageUrl) {
+          setPreviewUrl(classData.imageUrl);
+        } else {
+          setPreviewUrl("");
+        }
+        setPreviewObjectUrl(null);
       } catch (err) {
         console.error("Failed to load class", err);
         setError(err.message || "Unable to load class details.");
@@ -96,9 +110,31 @@ const ScheduleAddUpdate = () => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
+  useEffect(() => {
+    return () => {
+      if (previewObjectUrl) {
+        URL.revokeObjectURL(previewObjectUrl);
+      }
+    };
+  }, [previewObjectUrl]);
+
   const handleFileChange = (event) => {
     const file = event.target.files?.[0] || null;
+
+    if (previewObjectUrl) {
+      URL.revokeObjectURL(previewObjectUrl);
+    }
+
     setImageFile(file);
+
+    if (file) {
+      const objectUrl = URL.createObjectURL(file);
+      setPreviewObjectUrl(objectUrl);
+      setPreviewUrl(objectUrl);
+    } else {
+      setPreviewObjectUrl(null);
+      setPreviewUrl("");
+    }
   };
 
   const handleSave = async (e) => {
@@ -120,12 +156,20 @@ const ScheduleAddUpdate = () => {
         imageFile: imageFile || undefined,
       };
 
+      let savedClass;
       if (isEditing) {
-        await updateAdminClass(id, payload);
+        savedClass = await updateAdminClass(id, payload);
       } else {
-        await createAdminClass(payload);
+        savedClass = await createAdminClass(payload);
       }
 
+      if (formData.isPublished) {
+        await publishAdminClass(savedClass.id);
+      } else if (isEditing && initialPublishedState) {
+        await unpublishAdminClass(savedClass.id);
+      }
+
+      setInitialPublishedState(formData.isPublished);
       navigate("/admin/dashboard/schedules");
     } catch (err) {
       console.error("Failed to save class", err);
@@ -174,8 +218,16 @@ const ScheduleAddUpdate = () => {
         <div className="flex items-center gap-6 mb-6">
           <label className="font-semibold w-40 shrink-0">Upload Photo</label>
           <div className="flex flex-col gap-2">
-            <label className="w-16 h-16 border-2 border-dashed border-gray-400 rounded-lg flex items-center justify-center hover:border-amber-400 transition-colors cursor-pointer">
-              <Upload className="w-5 h-5" />
+            <label className="w-50 h-30 border-2 border-dashed border-gray-400 rounded-lg flex items-center justify-center hover:border-amber-400 transition-colors cursor-pointer overflow-hidden bg-gray-50/30">
+              {previewUrl ? (
+                <img
+                  src={previewUrl}
+                  alt="Class preview"
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <Upload className="w-5 h-5" />
+              )}
               <input
                 type="file"
                 accept="image/*"
@@ -329,7 +381,23 @@ const ScheduleAddUpdate = () => {
         </div>
 
         {/* Actions */}
-        <div className="flex items-center gap-4">
+        <div className="flex flex-wrap items-center gap-4">
+          <button
+            type="button"
+            onClick={() =>
+              setFormData((prev) => ({
+                ...prev,
+                isPublished: !prev.isPublished,
+              }))
+            }
+            className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
+              formData.isPublished
+                ? "bg-green-600 text-white"
+                : "bg-amber-500 text-slate-950"
+            }`}
+          >
+            {formData.isPublished ? "Public" : "Make Public"}
+          </button>
           <label className="flex items-center gap-2 text-sm font-medium">
             <input
               type="checkbox"
