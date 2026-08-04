@@ -16,11 +16,15 @@ import adminInstructorsRoutes from "./modules/instructor/admin.instructor.routes
 import adminEnquiriesRoutes from "./modules/enquiry/admin.enquiry.routes.js";
 import adminEnrollmentsRoutes from "./modules/enrollment/admin.enrollment.routes.js";
 import { errorHandler } from "./middleware/error.middleware.js";
+import swaggerUi from "swagger-ui-express";
+import specs from "./config/swagger.js";
 
 const app = express();
 
 app.use(cors());
 app.use(express.json({ limit: "10kb" }));
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 
 app.get("/", (req, res) => {
   res.json({ message: "Do bu martial arts api is running" });
