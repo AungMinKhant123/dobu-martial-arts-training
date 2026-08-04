@@ -46,7 +46,7 @@ const NavBar = () => {
   };
 
   return (
-    <nav className="w-fit fixed h-screen border-r-2 border-r-amber-50">
+    <nav className="w-fit fixed border-r-2 border-r-amber-50 bg-(--bg-color) h-full">
       <ul className="flex flex-col gap-5 mt-5">
         <div className="text-center">
           <img src={logo} alt="Logo" width={100} className="mx-auto mb-3" />

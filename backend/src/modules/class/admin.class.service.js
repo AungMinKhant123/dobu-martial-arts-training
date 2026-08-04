@@ -135,7 +135,17 @@ export const createAdminClassService = async (data, file) => {
     capacity,
     beltRequirement,
     instructorId,
+    isActive,
   } = data;
+
+  const normalizedIsActive =
+    isActive === undefined
+      ? true
+      : isActive === "false"
+        ? false
+        : isActive === false
+          ? false
+          : Boolean(isActive);
 
   // Validate required fields
   if (
@@ -185,6 +195,7 @@ export const createAdminClassService = async (data, file) => {
       capacity: Number(capacity),
       beltRequirement,
       instructorId,
+      isActive: normalizedIsActive,
     },
     include: {
       instructor: {

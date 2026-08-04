@@ -17,6 +17,8 @@ import {
   deleteAdminClass,
   getAdminClassStatistics,
   getAdminClasses,
+  publishAdminClass,
+  unpublishAdminClass,
 } from "../../services/adminClassService";
 
 const initialStats = {
@@ -29,7 +31,7 @@ const Schedule = () => {
   const [classes, setClasses] = useState([]);
   const [stats, setStats] = useState(initialStats);
   const [currentPage, setCurrentPage] = useState(1);
-  const [activeFilters, setActiveFilters] = useState([]);
+  const [activeFilter, setActiveFilter] = useState(null);
   const [filterOpen, setFilterOpen] = useState(false);
   const [sortOpen, setSortOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -55,16 +57,12 @@ const Schedule = () => {
     { label: "Instructor (A–Z)", key: "instructor" },
   ];
 
-  const removeFilter = (filter) => {
-    setActiveFilters((filters) => filters.filter((f) => f !== filter));
+  const removeFilter = () => {
+    setActiveFilter(null);
   };
 
   const toggleFilter = (option) => {
-    setActiveFilters((filters) =>
-      filters.includes(option)
-        ? filters.filter((f) => f !== option)
-        : [...filters, option],
-    );
+    setActiveFilter((current) => (current === option ? null : option));
   };
 
   useEffect(() => {
@@ -97,14 +95,14 @@ const Schedule = () => {
   }, []);
 
   const filteredClasses = classes.filter((c) => {
-    const matchesFilters = activeFilters.every((filter) => {
-      const normalizedFilter = filter.toLowerCase();
+    if (activeFilter) {
+      const normalizedFilter = activeFilter.toLowerCase();
       const level = c.level?.toLowerCase();
       const status = c.isActive ? "active" : "inactive";
-      return level === normalizedFilter || status === normalizedFilter;
-    });
-
-    if (!matchesFilters) return false;
+      if (level !== normalizedFilter && status !== normalizedFilter) {
+        return false;
+      }
+    }
 
     const query = searchQuery.toLowerCase().trim();
     if (!query) return true;
@@ -151,7 +149,7 @@ const Schedule = () => {
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [activeFilters, searchQuery, sortBy]);
+  }, [activeFilter, searchQuery, sortBy]);
 
   const handleDelete = async (id) => {
     if (!window.confirm("Delete this class?")) return;
@@ -162,6 +160,33 @@ const Schedule = () => {
     } catch (err) {
       console.error("Unable to delete class", err);
       setError(err.message || "Failed to delete class.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePublishToggle = async (classItem) => {
+    if (!classItem?.id) return;
+    try {
+      setLoading(true);
+      setError("");
+      const updatedClass = classItem.isPublished
+        ? await unpublishAdminClass(classItem.id)
+        : await publishAdminClass(classItem.id);
+      setClasses((prev) =>
+        prev.map((item) =>
+          item.id === classItem.id
+            ? {
+                ...item,
+                isPublished:
+                  updatedClass?.isPublished ?? !classItem.isPublished,
+              }
+            : item,
+        ),
+      );
+    } catch (err) {
+      console.error("Unable to update publish status", err);
+      setError(err.message || "Failed to update publish status.");
     } finally {
       setLoading(false);
     }
@@ -252,8 +277,9 @@ const Schedule = () => {
                   className="flex items-center gap-2 py-1.5 cursor-pointer"
                 >
                   <input
-                    type="checkbox"
-                    checked={activeFilters.includes(option)}
+                    type="radio"
+                    name="filter"
+                    checked={activeFilter === option}
                     onChange={() => toggleFilter(option)}
                   />
                   {option}
@@ -303,21 +329,18 @@ const Schedule = () => {
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3 text-sm">
           <span className="opacity-70">Active Filters:</span>
-          {activeFilters.map((filter) => (
-            <span
-              key={filter}
-              className="flex items-center gap-2 border border-gray-300 rounded-full px-3 py-1"
-            >
-              {filter}
+          {activeFilter && (
+            <span className="flex items-center gap-2 border border-gray-300 rounded-full px-3 py-1">
+              {activeFilter}
               <X
                 className="w-3.5 h-3.5 cursor-pointer"
-                onClick={() => removeFilter(filter)}
+                onClick={removeFilter}
               />
             </span>
-          ))}
+          )}
         </div>
         <button
-          onClick={() => setActiveFilters([])}
+          onClick={() => setActiveFilter(null)}
           className="flex items-center gap-1 text-red-500 text-sm font-medium"
         >
           Clear All <Trash2 className="w-4 h-4" />
@@ -385,15 +408,17 @@ const Schedule = () => {
                       </span>
                     </td>
                     <td className="px-4 py-3">
-                      <span
-                        className={
+                      <button
+                        type="button"
+                        onClick={() => handlePublishToggle(c)}
+                        className={`rounded-full px-3 py-1 text-xs font-semibold transition-colors ${
                           c.isPublished
-                            ? "text-green-600 font-semibold"
-                            : "text-red-500 font-semibold"
-                        }
+                            ? "bg-green-600 text-white"
+                            : "bg-amber-500 text-slate-950"
+                        }`}
                       >
-                        {c.isPublished ? "Yes" : "No"}
-                      </span>
+                        {c.isPublished ? "Public" : "Make Public"}
+                      </button>
                     </td>
                     <td className="px-4 py-3">
                       <Link

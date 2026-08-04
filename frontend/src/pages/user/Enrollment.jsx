@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import { User, Mail, Phone, Calendar, Home } from "lucide-react";
+import { User, Mail, Phone, Calendar, Home, ChevronDown } from "lucide-react";
 import Button from "../../components/Button";
 
 const initialFormState = {
@@ -225,14 +225,14 @@ const Enrollment = () => {
           <label className="block font-semibold mb-2">
             Date of Birth<span className="text-(--accent-color)">*</span>
           </label>
-          <div className="flex items-center gap-3 border border-white/40 rounded-full px-5 py-3">
-            <Calendar className="w-4 h-4 opacity-70 shrink-0" />
+          <div className="relative flex items-center gap-3 border border-white/40 rounded-full px-5 py-3">
+            <Calendar className="w-4 h-4 shrink-0 text-current" />
             <input
               type="date"
               name="dob"
               value={formData.dob}
               onChange={handleInputChange}
-              className="bg-transparent w-full focus:outline-none placeholder-white/50"
+              className="bg-transparent w-full focus:outline-none placeholder-white/50 appearance-none pr-2 [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:cursor-pointer"
               required
             />
           </div>
@@ -288,22 +288,25 @@ const Enrollment = () => {
           <label className="block font-semibold mb-2">
             Membership Selection<span className="text-(--accent-color)">*</span>
           </label>
-          <select
-            name="membershipId"
-            value={formData.membershipId}
-            onChange={handleMembershipChange}
-            className="w-full border border-white/40 rounded-full pl-5 pr-10 py-3 bg-transparent focus:outline-none [&>option]:bg-(--bg-color)"
-            required
-          >
-            <option value="" disabled>
-              Select Membership Plan
-            </option>
-            {membershipOptions.map((option) => (
-              <option key={option.id} value={option.id}>
-                {option.name}
+          <div className="relative">
+            <select
+              name="membershipId"
+              value={formData.membershipId}
+              onChange={handleMembershipChange}
+              className="w-full border border-white/40 rounded-full px-5 pr-10 py-3 bg-transparent focus:outline-none appearance-none [&>option]:bg-(--bg-color)"
+              required
+            >
+              <option value="" disabled>
+                Select Membership Plan
               </option>
-            ))}
-          </select>
+              {membershipOptions.map((option) => (
+                <option key={option.id} value={option.id}>
+                  {option.name}
+                </option>
+              ))}
+            </select>
+            <ChevronDown className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-current" />
+          </div>
         </div>
 
         <div>
@@ -315,23 +318,26 @@ const Enrollment = () => {
               All classes included with your membership
             </div>
           ) : (
-            <select
-              name="classId"
-              value={formData.classId}
-              onChange={handleInputChange}
-              disabled={!isBasic}
-              className="w-full border border-white/40 rounded-full pl-5 pr-10 py-3 bg-transparent focus:outline-none disabled:opacity-50 [&>option]:bg-(--bg-color)"
-              required={isBasic}
-            >
-              <option value="" disabled>
-                Class Selection
-              </option>
-              {classOptions.map((option) => (
-                <option key={option.id} value={option.id}>
-                  {option.title}
+            <div className="relative">
+              <select
+                name="classId"
+                value={formData.classId}
+                onChange={handleInputChange}
+                disabled={!isBasic}
+                className="w-full border border-white/40 rounded-full pl-5 pr-10 py-3 bg-transparent focus:outline-none disabled:opacity-50 appearance-none [&>option]:bg-(--bg-color)"
+                required={isBasic}
+              >
+                <option value="" disabled>
+                  Class Selection
                 </option>
-              ))}
-            </select>
+                {classOptions.map((option) => (
+                  <option key={option.id} value={option.id}>
+                    {option.title}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-current" />
+            </div>
           )}
         </div>
 
