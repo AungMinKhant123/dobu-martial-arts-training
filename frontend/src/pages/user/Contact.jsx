@@ -36,7 +36,7 @@ const Contact = () => {
         </div>
         <div className="max-w-md">
           <img
-            src="https://placehold.co/500x500"
+            src="https://res.cloudinary.com/d5tnusci/image/upload/v1784869495/ryan_ojsgqh.jpg"
             alt="A student with black belt"
           />
         </div>

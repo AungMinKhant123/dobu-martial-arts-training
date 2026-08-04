@@ -58,7 +58,8 @@ const facilities = [
       "Professional-grade tatami mats.",
       "Wall-to-wall padding for safety.",
     ],
-    image: "https://placehold.co/600x400?text=Matted+Training",
+    image:
+      "https://res.cloudinary.com/d5tnusci/image/upload/v1785816054/Modern_Training_Facilities_okng9o.jpg",
     imageSide: "left",
   },
   {
@@ -71,7 +72,8 @@ const facilities = [
       "Functional training equipment.",
       "Pull-up and suspension training stations.",
     ],
-    image: "https://placehold.co/600x400?text=Gym",
+    image:
+      "https://res.cloudinary.com/d5tnusci/image/upload/v1785815961/Flexible_Class_Schedule_df0xeh.jpg",
     imageSide: "right",
   },
   {
@@ -84,7 +86,8 @@ const facilities = [
       "Hairdryers and basic toiletries.",
       "Bench seating areas.",
     ],
-    image: "https://placehold.co/600x400?text=Changing+Room",
+    image:
+      "https://res.cloudinary.com/d5tnusci/image/upload/v1785816054/Modern_Training_Facilities_okng9o.jpg",
     imageSide: "left",
   },
 ];
@@ -120,7 +123,7 @@ const AboutUs = () => {
         {/* TODO: swap in the real dragon logo asset once ready */}
         <div className="flex items-center justify-center gap-6 mb-6">
           <img
-            src="https://placehold.co/100?text=%F0%9F%90%89"
+            src="https://res.cloudinary.com/d5tnusci/image/upload/v1785815554/logo2_ydck9s.png"
             alt=""
             aria-hidden="true"
             className="hidden md:block w-20 h-20"
@@ -129,7 +132,7 @@ const AboutUs = () => {
             Our Story
           </h2>
           <img
-            src="https://placehold.co/100?text=%F0%9F%90%89"
+            src="https://res.cloudinary.com/d5tnusci/image/upload/v1785815554/logo2_ydck9s.png"
             alt=""
             aria-hidden="true"
             className="hidden md:block w-20 h-20"

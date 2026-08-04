@@ -142,7 +142,7 @@ const Classes = () => {
           </button>
         </div>
         <img
-          src="https://placehold.co/500x600?text=Instructor"
+          src="https://res.cloudinary.com/d5tnusci/image/upload/v1785816814/CLASSBG_jstih3.png"
           alt="Martial arts instructor"
           className="rounded-lg object-cover w-full max-h-[450px]"
         />
@@ -309,9 +309,7 @@ const Classes = () => {
                             </Link>
                           </>
                         ) : (
-                          <p className="text-xs opacity-40 self-center">
-                            —
-                          </p>
+                          <p className="text-xs opacity-40 self-center">—</p>
                         )}
                       </div>
                     );
