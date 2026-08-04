@@ -21,7 +21,8 @@ import Button from "../../components/Button";
 import { getHomeData } from "../../services/homeService";
 import { getAllInstructors } from "../../services/instructorService";
 
-const dragonDecor = "https://placehold.co/100x100?text=%F0%9F%90%89";
+const dragonDecor =
+  "https://res.cloudinary.com/d5tnusci/image/upload/v1785815554/logo2_ydck9s.png";
 const fallbackImage = "https://placehold.co/600x600?text=DoBu+Blog";
 
 const whyChooseUs = [
@@ -30,28 +31,32 @@ const whyChooseUs = [
     title: "Certified Instructors",
     description:
       "learn from experiences and highly certified martial arts professionals",
-    image: "https://placehold.co/100x100?text=Instructor",
+    image:
+      "https://res.cloudinary.com/d5tnusci/image/upload/v1785815904/instructor_kcz6fi.png",
     stats: ["Expert Trainees", "Years Of Experiences", "Proven Result"],
   },
   {
     Icon: Users,
     title: "Friendly Environment",
     description: "a supportive, motivate community that make you grow together",
-    image: "https://placehold.co/100x100?text=Environment",
+    image:
+      "https://res.cloudinary.com/d5tnusci/image/upload/v1785815961/Flexible_Class_Schedule_df0xeh.jpg",
     stats: ["Support Community", "All Ages Level", "Positive and Motivating"],
   },
   {
     Icon: Building2,
     title: "Modern Facilities",
     description: "train in a clean and safe academy",
-    image: "https://placehold.co/100x100?text=Facilities",
+    image:
+      "https://res.cloudinary.com/d5tnusci/image/upload/v1785816054/Modern_Training_Facilities_okng9o.jpg",
     stats: ["Premium Equipment", "Clean & Safe Space", "Spacious Areas"],
   },
   {
     Icon: CalendarClock,
     title: "Flexible Schedule",
     description: "multiple timing classes that make fit your busy life style",
-    image: "https://placehold.co/100x100?text=Schedule",
+    image:
+      "https://res.cloudinary.com/d5tnusci/image/upload/v1785815961/Flexible_Class_Schedule_df0xeh.jpg",
     stats: [
       "Multiple Classes Timing",
       "Weekend & Weekdays",
@@ -190,14 +195,15 @@ const testimonials = Array.from({ length: 6 }).map((_, i) => ({
   role: "Karate Student",
   quote:
     "The instructors are amazing and assisted me to gain my goals in quick.",
-  avatar: `https://placehold.co/80x80?text=${i + 1}`,
+  avatar: `https://res.cloudinary.com/d5tnusci/image/upload/v1785816360/STUDENT1_tvh3bf.jpg`,
 }));
 
 const specialOffers = [
   {
     title: "Free Trial Class",
     description: "Experience professional martial arts training.",
-    image: "https://placehold.co/150x150?text=Trial",
+    image:
+      "https://res.cloudinary.com/d5tnusci/image/upload/v1785816490/ADVERTISE1_vbqdtg.jpg",
     button: "Enroll Free Trial",
     buttonVariant: "accent",
     borderColor: "border-(--accent-color)",
@@ -206,7 +212,8 @@ const specialOffers = [
     title: "20% Off New Member Discount",
     highlight: "20% Off",
     description: "Valid until 31 August 2026",
-    image: "https://placehold.co/150x150?text=Discount",
+    image:
+      "https://res.cloudinary.com/d5tnusci/image/upload/v1785816518/ADVERTISE2_a8ga2h.jpg",
     button: "Join Today",
     buttonVariant: "outline",
     borderColor: "border-amber-400",
@@ -214,7 +221,8 @@ const specialOffers = [
   {
     title: "Summer Martial Arts Camp",
     description: "For kids & Teenagers.\nStarts 15 July 2026",
-    image: "https://placehold.co/150x150?text=Camp",
+    image:
+      "https://res.cloudinary.com/d5tnusci/image/upload/v1785816519/ADVERTISE3_pbkcdj.jpg",
     button: "Enroll Now",
     buttonVariant: "accent",
     borderColor: "border-(--accent-color)",
@@ -359,7 +367,7 @@ const Home = () => {
           </div>
         </div>
         <img
-          src="https://placehold.co/600x600?text=Hero+Collage"
+          src="https://res.cloudinary.com/d5tnusci/image/upload/v1785814182/bg_fd5dkv.png"
           alt="Martial arts training"
           className="rounded-lg object-cover w-full"
         />
