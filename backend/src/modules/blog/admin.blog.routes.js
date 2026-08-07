@@ -14,9 +14,19 @@ import { authenticate } from "../../middleware/authenticate.middleware.js";
 import { authorize } from "../../middleware/authorize.middleware.js";
 
 const router = express.Router();
-router.get("/", getAdminBlogsController);
-router.get("/statistics", getAdminBlogStatisticsController);
-router.get("/:id", getAdminBlogByIdController);
+router.get("/", authenticate, authorize("ADMIN"), getAdminBlogsController);
+router.get(
+  "/statistics",
+  authenticate,
+  authorize("ADMIN"),
+  getAdminBlogStatisticsController,
+);
+router.get(
+  "/:id",
+  authenticate,
+  authorize("ADMIN"),
+  getAdminBlogByIdController,
+);
 router.post(
   "/",
   authenticate,
@@ -24,10 +34,31 @@ router.post(
   upload.single("image"),
   createAdminBlogController,
 );
-router.patch("/:id", upload.single("image"), updateAdminBlogController);
-router.delete("/:id", deleteAdminBlogController);
+router.patch(
+  "/:id",
+  authenticate,
+  authorize("ADMIN"),
+  upload.single("image"),
+  updateAdminBlogController,
+);
+router.delete(
+  "/:id",
+  authenticate,
+  authorize("ADMIN"),
+  deleteAdminBlogController,
+);
 
-router.patch("/:id/publish", publishAdminBlogController);
-router.patch("/:id/unpublish", unpublishAdminBlogController);
+router.patch(
+  "/:id/publish",
+  authenticate,
+  authorize("ADMIN"),
+  publishAdminBlogController,
+);
+router.patch(
+  "/:id/unpublish",
+  authenticate,
+  authorize("ADMIN"),
+  unpublishAdminBlogController,
+);
 
 export default router;

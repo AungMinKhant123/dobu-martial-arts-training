@@ -19,10 +19,37 @@ router.get(
   authorize("ADMIN"),
   getInstructorOptionsController,
 );
-router.get("/", getAdminInstructorsController);
-router.get("/:id", getAdminInstructorByIdController);
-router.post("/", upload.single("image"), createAdminInstructorController);
-router.patch("/:id", upload.single("image"), updateAdminInstructorController);
-router.delete("/:id", deleteAdminInstructorController);
+router.get(
+  "/",
+  authenticate,
+  authorize("ADMIN"),
+  getAdminInstructorsController,
+);
+router.get(
+  "/:id",
+  authenticate,
+  authorize("ADMIN"),
+  getAdminInstructorByIdController,
+);
+router.post(
+  "/",
+  authenticate,
+  authorize("ADMIN"),
+  upload.single("image"),
+  createAdminInstructorController,
+);
+router.patch(
+  "/:id",
+  authenticate,
+  authorize("ADMIN"),
+  upload.single("image"),
+  updateAdminInstructorController,
+);
+router.delete(
+  "/:id",
+  authenticate,
+  authorize("ADMIN"),
+  deleteAdminInstructorController,
+);
 
 export default router;
