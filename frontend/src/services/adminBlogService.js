@@ -1,3 +1,5 @@
+import { getAuthHeaders } from "./authService.js";
+
 const handleResponse = async (response) => {
   const payload = await response.json().catch(() => null);
   if (!response.ok) {
@@ -26,6 +28,9 @@ export const getAdminBlogs = async ({
 
   const response = await fetch(`/api/admin/blogs?${query.toString()}`, {
     credentials: "include",
+    headers: {
+      ...getAuthHeaders(),
+    },
   });
   return await handleResponse(response);
 };
@@ -33,6 +38,9 @@ export const getAdminBlogs = async ({
 export const getAdminBlogStatistics = async () => {
   const response = await fetch(`/api/admin/blogs/statistics`, {
     credentials: "include",
+    headers: {
+      ...getAuthHeaders(),
+    },
   });
   return await handleResponse(response);
 };
@@ -40,6 +48,9 @@ export const getAdminBlogStatistics = async () => {
 export const getAdminBlogById = async (id) => {
   const response = await fetch(`/api/admin/blogs/${id}`, {
     credentials: "include",
+    headers: {
+      ...getAuthHeaders(),
+    },
   });
   return await handleResponse(response);
 };
@@ -63,6 +74,9 @@ export const createAdminBlog = async ({
   const response = await fetch(`/api/admin/blogs`, {
     method: "POST",
     credentials: "include",
+    headers: {
+      ...getAuthHeaders(),
+    },
     body: formData,
   });
   const payload = await handleResponse(response);
@@ -86,6 +100,9 @@ export const updateAdminBlog = async (
   const response = await fetch(`/api/admin/blogs/${id}`, {
     method: "PATCH",
     credentials: "include",
+    headers: {
+      ...getAuthHeaders(),
+    },
     body: formData,
   });
   const payload = await handleResponse(response);
@@ -97,6 +114,7 @@ export const deleteAdminBlog = async (id) => {
     method: "DELETE",
     credentials: "include",
     headers: {
+      ...getAuthHeaders(),
       "Content-Type": "application/json",
     },
   });
@@ -108,6 +126,7 @@ export const publishAdminBlog = async (id) => {
     method: "PATCH",
     credentials: "include",
     headers: {
+      ...getAuthHeaders(),
       "Content-Type": "application/json",
     },
   });
@@ -120,6 +139,7 @@ export const unpublishAdminBlog = async (id) => {
     method: "PATCH",
     credentials: "include",
     headers: {
+      ...getAuthHeaders(),
       "Content-Type": "application/json",
     },
   });

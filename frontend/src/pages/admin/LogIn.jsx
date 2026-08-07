@@ -22,7 +22,6 @@ const LogIn = () => {
 
     try {
       await login({ email, password });
-      localStorage.setItem("authSession", "true");
       navigate("/admin/dashboard", { replace: true });
     } catch (error) {
       setError(error.message || "Login failed. Please try again.");

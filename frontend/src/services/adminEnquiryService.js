@@ -1,7 +1,4 @@
-const getAuthHeaders = () => {
-  const accessToken = localStorage.getItem("accessToken");
-  return accessToken ? { Authorization: `Bearer ${accessToken}` } : {};
-};
+import { getAuthHeaders } from "./authService.js";
 
 const handleResponse = async (response) => {
   const payload = await response.json().catch(() => null);
@@ -31,6 +28,7 @@ export const getAdminEnquiries = async ({
   if (status) query.set("status", status);
 
   const response = await fetch(`/api/admin/enquiries?${query.toString()}`, {
+    credentials: "include",
     headers: {
       ...getAuthHeaders(),
     },
@@ -41,6 +39,7 @@ export const getAdminEnquiries = async ({
 
 export const getAdminEnquiryStatistics = async () => {
   const response = await fetch(`/api/admin/enquiries/statistics`, {
+    credentials: "include",
     headers: {
       ...getAuthHeaders(),
     },
@@ -50,6 +49,7 @@ export const getAdminEnquiryStatistics = async () => {
 
 export const getAdminEnquiryById = async (id) => {
   const response = await fetch(`/api/admin/enquiries/${id}`, {
+    credentials: "include",
     headers: {
       ...getAuthHeaders(),
     },
@@ -60,6 +60,7 @@ export const getAdminEnquiryById = async (id) => {
 export const markAdminEnquiryAsRead = async (id) => {
   const response = await fetch(`/api/admin/enquiries/${id}/read`, {
     method: "PATCH",
+    credentials: "include",
     headers: {
       ...getAuthHeaders(),
       "Content-Type": "application/json",
@@ -71,6 +72,7 @@ export const markAdminEnquiryAsRead = async (id) => {
 export const replyAdminEnquiry = async (id, { subject, message }) => {
   const response = await fetch(`/api/admin/enquiries/${id}/reply`, {
     method: "POST",
+    credentials: "include",
     headers: {
       ...getAuthHeaders(),
       "Content-Type": "application/json",
@@ -83,6 +85,7 @@ export const replyAdminEnquiry = async (id, { subject, message }) => {
 export const generateAdminEnquiryReply = async (id) => {
   const response = await fetch(`/api/admin/enquiries/${id}/generate-reply`, {
     method: "POST",
+    credentials: "include",
     headers: {
       ...getAuthHeaders(),
       "Content-Type": "application/json",
