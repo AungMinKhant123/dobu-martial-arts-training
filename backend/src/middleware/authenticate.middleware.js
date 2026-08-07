@@ -20,7 +20,8 @@ export const authenticate = (req, res, next) => {
     const token =
       req.cookies?.accessToken ||
       getTokenFromCookie(req) ||
-      authHeader?.split(" ")[1];
+      authHeader?.split(" ")[1] ||
+      req.headers["x-access-token"];
 
     if (!token) {
       throw new AppError("Authentication required", 401);

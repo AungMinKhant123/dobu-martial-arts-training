@@ -1,3 +1,5 @@
+import { getAuthHeaders } from "./authService.js";
+
 const handleResponse = async (response) => {
   const payload = await response.json().catch(() => null);
   if (!response.ok) {
@@ -27,6 +29,9 @@ export const getAdminInstructors = async ({
 
   const response = await fetch(`/api/admin/instructors?${query.toString()}`, {
     credentials: "include",
+    headers: {
+      ...getAuthHeaders(),
+    },
   });
   return await handleResponse(response);
 };
@@ -34,6 +39,9 @@ export const getAdminInstructors = async ({
 export const getAdminInstructorById = async (id) => {
   const response = await fetch(`/api/admin/instructors/${id}`, {
     credentials: "include",
+    headers: {
+      ...getAuthHeaders(),
+    },
   });
   const payload = await handleResponse(response);
   return payload.data || payload;
@@ -88,6 +96,9 @@ export const createAdminInstructor = async ({
   const response = await fetch(`/api/admin/instructors`, {
     method: "POST",
     credentials: "include",
+    headers: {
+      ...getAuthHeaders(),
+    },
     body: buildInstructorFormData({
       name,
       email,
@@ -125,6 +136,9 @@ export const updateAdminInstructor = async (
   const response = await fetch(`/api/admin/instructors/${id}`, {
     method: "PATCH",
     credentials: "include",
+    headers: {
+      ...getAuthHeaders(),
+    },
     body: buildInstructorFormData({
       name,
       email,
@@ -148,6 +162,7 @@ export const deleteAdminInstructor = async (id) => {
     method: "DELETE",
     credentials: "include",
     headers: {
+      ...getAuthHeaders(),
       "Content-Type": "application/json",
     },
   });

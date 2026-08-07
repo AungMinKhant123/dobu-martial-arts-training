@@ -1,7 +1,4 @@
-const getAuthHeaders = () => {
-  const accessToken = localStorage.getItem("accessToken");
-  return accessToken ? { Authorization: `Bearer ${accessToken}` } : {};
-};
+import { getAuthHeaders } from "./authService.js";
 
 const handleResponse = async (response) => {
   const payload = await response.json().catch(() => null);
@@ -66,6 +63,7 @@ export const getAdminClasses = async ({
   if (isActive !== undefined) query.set("isActive", String(isActive));
 
   const response = await fetch(`/api/admin/classes?${query.toString()}`, {
+    credentials: "include",
     headers: {
       ...getAuthHeaders(),
     },
@@ -76,6 +74,7 @@ export const getAdminClasses = async ({
 
 export const getAdminClassStatistics = async () => {
   const response = await fetch(`/api/admin/classes/statistics`, {
+    credentials: "include",
     headers: {
       ...getAuthHeaders(),
     },
@@ -86,6 +85,7 @@ export const getAdminClassStatistics = async () => {
 
 export const getAdminClassById = async (id) => {
   const response = await fetch(`/api/admin/classes/${id}`, {
+    credentials: "include",
     headers: {
       ...getAuthHeaders(),
     },
@@ -97,6 +97,7 @@ export const getAdminClassById = async (id) => {
 export const createAdminClass = async (payload) => {
   const response = await fetch(`/api/admin/classes`, {
     method: "POST",
+    credentials: "include",
     headers: {
       ...getAuthHeaders(),
     },
@@ -109,6 +110,7 @@ export const createAdminClass = async (payload) => {
 export const updateAdminClass = async (id, payload) => {
   const response = await fetch(`/api/admin/classes/${id}`, {
     method: "PATCH",
+    credentials: "include",
     headers: {
       ...getAuthHeaders(),
     },
@@ -121,6 +123,7 @@ export const updateAdminClass = async (id, payload) => {
 export const deleteAdminClass = async (id) => {
   const response = await fetch(`/api/admin/classes/${id}`, {
     method: "DELETE",
+    credentials: "include",
     headers: {
       ...getAuthHeaders(),
     },
@@ -131,6 +134,7 @@ export const deleteAdminClass = async (id) => {
 export const publishAdminClass = async (id) => {
   const response = await fetch(`/api/admin/classes/${id}/publish`, {
     method: "PATCH",
+    credentials: "include",
     headers: {
       ...getAuthHeaders(),
     },
@@ -142,6 +146,7 @@ export const publishAdminClass = async (id) => {
 export const unpublishAdminClass = async (id) => {
   const response = await fetch(`/api/admin/classes/${id}/unpublish`, {
     method: "PATCH",
+    credentials: "include",
     headers: {
       ...getAuthHeaders(),
     },

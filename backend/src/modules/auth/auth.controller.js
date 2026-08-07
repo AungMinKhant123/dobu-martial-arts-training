@@ -54,9 +54,14 @@ export const register = async (req, res, next) => {
 
 export const login = async (req, res, next) => {
   try {
-    const { accessToken, refreshToken } = await loginService(req.body);
+    const { accessToken, refreshToken, user } = await loginService(req.body);
     setAuthCookies(res, accessToken, refreshToken);
-    res.status(200).json({ message: "Logged in successfully" });
+    res.status(200).json({
+      message: "Logged in successfully",
+      accessToken,
+      refreshToken,
+      user,
+    });
   } catch (error) {
     next(error);
   }
@@ -70,6 +75,8 @@ export const refreshToken = async (req, res, next) => {
     setAuthCookies(res, tokens.accessToken, tokens.refreshToken);
     res.status(200).json({
       message: "Token refreshed successfully",
+      accessToken: tokens.accessToken,
+      refreshToken: tokens.refreshToken,
     });
   } catch (error) {
     next(error);

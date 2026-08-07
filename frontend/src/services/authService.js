@@ -1,3 +1,11 @@
+import {
+  clearStoredAuthState,
+  getAccessToken,
+  getCurrentUser,
+  isAuthenticated,
+  persistAuthState,
+} from "./authStorage.js";
+
 const API_BASE = "/api/auth";
 
 const handleResponse = async (response) => {
@@ -18,7 +26,15 @@ export const login = async ({ email, password }) => {
     credentials: "include",
     body: JSON.stringify({ email, password }),
   });
-  return await handleResponse(response);
+
+  const payload = await handleResponse(response);
+  persistAuthState({
+    accessToken: payload.accessToken ?? null,
+    refreshToken: payload.refreshToken ?? null,
+    user: payload.user ?? null,
+  });
+
+  return payload;
 };
 
 export const logout = async () => {
@@ -30,16 +46,23 @@ export const logout = async () => {
   } catch (error) {
     // Ignore logout errors and still clear the client session state.
   } finally {
-    localStorage.removeItem("authSession");
+    clearStoredAuthState();
   }
 };
 
-export const isAuthenticated = () => {
-  return Boolean(localStorage.getItem("authSession"));
+export const getAuthHeaders = () => {
+  const accessToken = getAccessToken();
+  return accessToken ? { Authorization: `Bearer ${accessToken}` } : {};
 };
+
+export const getCurrentAuthUser = () => getCurrentUser();
+
+export { isAuthenticated };
 
 export default {
   login,
   logout,
   isAuthenticated,
+  getAuthHeaders,
+  getCurrentAuthUser,
 };
