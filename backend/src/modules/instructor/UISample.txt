@@ -1,0 +1,131 @@
+------------------------------------------------------
+ Instructor Management
+------------------------------------------------------
+
+[ + Add Instructor ]
+
+Search
+[ Search by name/email             🔍 ]
+
+Filters:
+
+Belt Level:
+[ All ▼ ]
+
+Sort By: (createdAt, name, beltLevel)
+[ All ▼ ]
+
+Sort Order: (asc, desc)
+[ Newest ▼ ]
+
+
+------------------------------------------------------
+
+| Image | Name              | Belt  | Experience | Classes | Action |
+|-------|-------------------|-------|------------|---------|--------|
+| 🧑    | Takashi Yamamoto  | Black | 15 yrs     | 10      | Edit | Delete
+| 🧑    | Sarah Lee         | Green | 12 yrs     | 5       | Edit | Delete
+| 🧑    | David Chen        | Brown | 10 yrs     | 5       | Edit | Delete
+
+------------------------------------------------------
+
+Pagination
+
+< Previous     1 2 3     Next >
+
+
+------------------------------------------------------
+ Create Instructor
+------------------------------------------------------
+
+
+Basic Information
+------------------------------------------------------
+
+Profile Image
+
+        +----------------+
+        |                |
+        |   Upload       |
+        |    Image       |
+        |                |
+        +----------------+
+
+
+Name *
+[ Takashi Yamamoto                    ]
+
+
+Email *
+[ takashi@dojo.com                    ]
+
+
+Phone *
+[ 0911111111                          ]
+
+
+Belt Level *
+[ BLACK ▼ ]
+
+
+Experience Years *
+[ 15 ]
+
+
+Biography
+
+[                                             
+                                             
+                                              ]
+
+
+
+------------------------------------------------------
+ Qualifications
+------------------------------------------------------
+
+[ Bachelor of Sports Science              ❌ ]
+
+[ Martial Arts Coaching Diploma            ❌ ]
+
+[ + Add Qualification ]
+
+
+------------------------------------------------------
+ Certifications
+------------------------------------------------------
+
+[ WKF Certified Karate Coach              ❌ ]
+
+[ CPR Certification                       ❌ ]
+
+[ + Add Certification ]
+
+
+------------------------------------------------------
+ Achievements
+------------------------------------------------------
+
+[ National Karate Champion 2019            ❌ ]
+
+[ Best Instructor Award                    ❌ ]
+
+[ + Add Achievement ]
+
+
+------------------------------------------------------
+ Specialties
+------------------------------------------------------
+
+[ Traditional Karate                       ❌ ]
+
+[ Self Defense                             ❌ ]
+
+[ + Add Specialty ]
+
+
+------------------------------------------------------
+
+             Cancel       Create Instructor
+
+------------------------------------------------------

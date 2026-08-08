@@ -1,0 +1,135 @@
+import prisma from "../../config/prisma.js";
+import AppError from "../../utils/AppError.js";
+import { isValidEmail, isValidPhone } from "../../utils/validators.js";
+import {
+  sendAdminEnrollmentEmail,
+  sendCustomerEnrollmentEmail,
+} from "../email/email.service.js";
+import { createEnrollmentNotification } from "../notification/notification.service.js";
+
+export const createEnrollmentService = async (body) => {
+  let {
+    firstName,
+    lastName,
+    email,
+    phone,
+    dob,
+    gender,
+    address,
+    membershipId,
+    classId,
+  } = body;
+
+  if (
+    !firstName ||
+    !lastName ||
+    !email ||
+    !phone ||
+    !dob ||
+    !gender ||
+    !address ||
+    !membershipId
+  ) {
+    throw new AppError("All required fields must be provided.", 400);
+  }
+
+  const cleanFirstName = firstName.trim();
+  const cleanLastName = lastName.trim();
+  const cleanEmail = email.trim().toLowerCase();
+  const cleanPhone = phone.trim();
+  const cleanAddress = address.trim();
+  const cleanMembershipId = membershipId.trim();
+
+  if (classId) {
+    classId = classId.trim();
+  }
+
+  if (!isValidEmail(cleanEmail)) {
+    throw new AppError("Invalid email address.", 400);
+  }
+
+  if (!isValidPhone(cleanPhone)) {
+    throw new AppError("Invalid phone number.", 400);
+  }
+
+  const dateOfBirth = new Date(dob);
+
+  if (isNaN(dateOfBirth.getTime())) {
+    throw new AppError("Invalid date of birth.", 400);
+  }
+
+  const membership = await prisma.membership.findUnique({
+    where: {
+      id: membershipId,
+    },
+  });
+
+  if (!membership) {
+    throw new AppError("Membership not found.", 404);
+  }
+
+  if (membership.allowsAllClasses) {
+    classId = null;
+  } else {
+    if (!classId) {
+      throw new AppError(
+        "Please select a class for the Basic membership.",
+        400,
+      );
+    }
+  }
+
+  if (classId) {
+    const martialClass = await prisma.class.findUnique({
+      where: {
+        id: classId,
+      },
+    });
+
+    if (!martialClass) {
+      throw new AppError("Class not found.", 404);
+    }
+  }
+
+  const existingEnrollment = await prisma.enrollment.findFirst({
+    where: {
+      email,
+      status: "PENDING",
+    },
+  });
+
+  if (existingEnrollment) {
+    throw new AppError("You already have a pending enrollment.", 409);
+  }
+
+  const enrollment = await prisma.enrollment.create({
+    data: {
+      firstName: cleanFirstName,
+      lastName: cleanLastName,
+      email: cleanEmail,
+      phone: cleanPhone,
+      dob: dateOfBirth,
+      gender,
+      address: cleanAddress,
+      membershipId: cleanMembershipId,
+      classId: classId || null,
+    },
+    include: {
+      membership: true,
+      class: true,
+    },
+  });
+
+  const admins = await createEnrollmentNotification(enrollment);
+  await sendCustomerEnrollmentEmail({
+    firstName,
+    email,
+    membership: enrollment.membership.name,
+    className: enrollment.class?.title,
+  });
+  await Promise.all(
+    admins.map((admin) => sendAdminEnrollmentEmail({ admin, enrollment })),
+  );
+
+  return enrollment;
+};

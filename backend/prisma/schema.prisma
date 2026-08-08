@@ -9,5 +9,465 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
+}
+
+// ENUMS
+enum Role {
+  ADMIN
+  USER
+}
+
+enum DayOfWeek {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
+}
+
+enum EnquiryStatus {
+  PENDING
+  READ
+  REPLIED
+}
+
+enum EnrollmentStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum MemberStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum NotificationType {
+  ENQUIRY
+  ENROLLMENT
+  FEEDBACK
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum ClassLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+enum MartialArt {
+  KARATE
+  JUDO
+  TAEKWONDO
+  AIKIDO
+  JIU_JITSU
+  MUAY_THAI
+  KUNG_FU
+}
+
+enum NotificationEntityType {
+  ENQUIRY
+  ENROLLMENT
+  BLOG
+  FEEDBACK
+  MEMBER
+}
+
+enum BeltLevel {
+  WHITE
+  YELLOW
+  ORANGE
+  GREEN
+  BLUE
+  PURPLE
+  BROWN
+  BLACK
+}
+
+//User
+model User {
+  id       String @id @default(cuid())
+  name     String
+  email    String @unique
+  password String
+
+  role Role @default(USER)
+
+  isActive Boolean @default(true)
+
+  refreshTokens RefreshToken[]
+
+  blogs Blog[]
+
+  notificationRecipients NotificationRecipient[]
+  repliedEnquiries Enquiry[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// NOTIFICATIONS
+model Notification {
+  id String @id @default(cuid())
+
+  title   String
+  message String
+  type    NotificationType
+
+  entityId   String?
+  entityType NotificationEntityType?
+
+  recipients NotificationRecipient[]
+
+  createdAt DateTime @default(now())
+}
+
+// NOTIFICATION RECIPIENTS
+model NotificationRecipient {
+  id String @id @default(cuid())
+
+  notificationId String
+  notification Notification @relation(fields: [notificationId], references: [id], onDelete: Cascade)
+
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  isRead Boolean @default(false)
+  readAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([notificationId, userId])
+}
+
+// ENQUIRIES
+model Enquiry {
+  id String @id @default(cuid())
+
+  name    String
+  email   String
+  phone   String?
+  subject String
+  message String
+
+  status EnquiryStatus @default(PENDING)
+
+  replySubject String?
+  replyMessage String? @db.Text
+
+  repliedAt DateTime?
+
+  repliedById String?
+  repliedBy User? @relation(fields: [repliedById], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+}
+
+// MEMBERSHIP
+model Membership {
+  id String @id @default(cuid())
+
+  name        String @unique
+  description String
+  duration    Int
+  price       Float
+
+  members     Member[]
+  enrollments Enrollment[]
+  allowsAllClasses Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ENROLLMENT REQUEST
+model Enrollment {
+  id String @id @default(cuid())
+
+  firstName String
+  lastName  String
+
+  email String
+  phone String
+
+  dob    DateTime
+  gender Gender
+
+  address String
+
+  status EnrollmentStatus @default(PENDING)
+
+  membershipId String
+  membership   Membership @relation(fields: [membershipId], references: [id])
+
+  classId String?
+  class   Class? @relation(fields: [classId], references: [id])
+
+  member Member?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+}
+
+// MEMBERS
+model Member {
+  id String @id @default(cuid())
+
+  firstName String
+  lastName  String
+
+  email String @unique
+  phone String
+
+  dob    DateTime
+  gender Gender
+
+  address String
+
+  status MemberStatus @default(ACTIVE)
+
+  joinedAt DateTime @default(now())
+
+  membershipId String
+  membership   Membership @relation(fields: [membershipId], references: [id])
+
+  classId String?
+  class   Class? @relation(fields: [classId], references: [id])
+
+  enrollmentId String?     @unique
+  enrollment   Enrollment? @relation(fields: [enrollmentId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+}
+
+// INSTRUCTORS
+model Instructor {
+  id String @id @default(cuid())
+
+  name String
+
+  email String @unique
+  phone String?
+
+  biography String @db.Text
+
+  imageUrl String?
+  imagePublicId String?
+
+  beltLevel BeltLevel?
+
+  experienceYears Int?
+
+  qualifications InstructorQualification[]
+
+  certifications InstructorCertification[]
+
+  achievements InstructorAchievement[]
+
+  specialties InstructorSpecialty[]
+
+  classes Class[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model InstructorQualification {
+  id String @id @default(cuid())
+
+  instructorId String
+
+  title String
+
+  instructor Instructor @relation(fields: [instructorId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+}
+
+model InstructorCertification {
+
+  id String @id @default(cuid())
+
+  instructorId String
+
+  name String
+
+  issuedBy String?
+
+  instructor Instructor @relation(fields: [instructorId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+}
+
+model InstructorAchievement {
+
+  id String @id @default(cuid())
+
+  instructorId String
+
+  title String
+
+  year Int?
+
+
+  instructor Instructor @relation(fields: [instructorId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+}
+
+model InstructorSpecialty {
+
+  id String @id @default(cuid())
+
+  instructorId String
+
+  name String
+
+
+  instructor Instructor @relation(fields: [instructorId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+}
+
+// CLASSES
+model Class {
+  id String @id @default(cuid())
+
+  title       String
+  description String
+  martialArt MartialArt
+
+  level ClassLevel
+  imageUrl String?
+  imagePublicId   String?
+
+  minAge Int
+  duration Int
+
+  overview    String? @db.Text
+
+  capacity Int
+  beltRequirement String?
+
+  isActive Boolean @default(true)
+  isPublished Boolean @default(false)
+
+  instructorId String
+  instructor   Instructor @relation(fields: [instructorId], references: [id])
+
+  enrollments Enrollment[]
+  members Member[]
+
+  timetables Timetable[]
+  learningOutcomes LearningOutcome[]
+  feedbacks Feedback[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([martialArt])
+  @@index([level])
+  @@index([isActive])
+}
+
+// LEARNING OUTCOME
+model LearningOutcome {
+  id String @id @default(cuid())
+
+  content String
+
+  order Int
+
+  classId String
+  class Class @relation(fields: [classId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+}
+
+// TIMETABLE
+model Timetable {
+  id String @id @default(cuid())
+
+  classId String
+  class   Class  @relation(fields: [classId], references: [id])
+
+  dayOfWeek DayOfWeek
+
+  startTime DateTime @db.Time(0)
+  endTime   DateTime @db.Time(0)
+
+  room String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// BLOG
+model Blog {
+  id String @id @default(cuid())
+
+  title String
+
+  slug String @unique
+
+  summary String? @db.Text
+
+  content String @db.LongText
+
+  imageUrl String?
+  imagePublicId   String?
+
+  isPublished Boolean @default(false)
+
+  publishedAt DateTime?
+
+  authorId String
+  author User @relation(fields: [authorId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// RefreshToken
+model RefreshToken {
+  id String @id @default(cuid())
+
+  token String @unique
+
+  expiresAt DateTime
+
+  createdAt DateTime @default(now())
+
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// FEEDBACK
+model Feedback {
+  id String @id @default(cuid())
+  name String?
+  email String?
+  rating Int
+  message String? @db.Text
+  isApproved Boolean @default(false)
+  classId String?
+  class Class? @relation(fields: [classId], references: [id])
+  createdAt DateTime @default(now())
 }
